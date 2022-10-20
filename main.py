@@ -25,9 +25,9 @@ app.register_blueprint(developer, url_prefix = '/developer')
 @app.route('/login')
 @try_except
 def login_view():
-    # session['user_role'] = 'Admin'
-    # return route_to()
-    return render_template('index.html')
+    session['user_role'] = 'Developer'
+    return route_to()
+    # return render_template('index.html')
 
 
 @app.route('/logout')

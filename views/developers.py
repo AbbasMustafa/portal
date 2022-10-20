@@ -18,4 +18,4 @@ def home_view():
     # Developers.post()
     # Developers.get()
     # Developers.update()
-    return render_template('developers/index.html')
+    return render_template('developer/index.html')
