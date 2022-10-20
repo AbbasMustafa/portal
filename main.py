@@ -22,14 +22,13 @@ app.register_blueprint(developer, url_prefix = '/developer')
 @app.route('/login')
 @try_except
 def login_view():
-
     return render_template('index.html')
 
 
 @app.route('/logout')
 @try_except
 def logout_view():
-    session.clear()
+    # session.clear()
     return redirect(url_for('login_view'))
 
 if __name__ == '__main__':

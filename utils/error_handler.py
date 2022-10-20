@@ -1,8 +1,12 @@
+from functools import wraps
+
 def try_except(my_func):
-    def wrap():
+    @wraps(my_func)
+    def wrapper():
         try:
-            my_func()
+            return my_func()
         except Exception as e:
+            # return str(e)
             raise
-    return wrap
+    return wrapper
 
