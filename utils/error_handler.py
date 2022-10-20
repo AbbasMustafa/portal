@@ -1,4 +1,5 @@
 from functools import wraps
+from config import *
 
 def try_except(my_func):
     @wraps(my_func)
