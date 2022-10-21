@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template
-from queries.deleteQuery import *
-from queries.updateQuery import *
-from queries.getQuery import *
-from queries.postQuery import *
+from queries.deleteQuery import HrQueryDelete
+from queries.updateQuery import HrQueryUpdate
+from queries.getQuery import HrQueryGet
+from queries.postQuery import HrQueryPost
 from utils.auth import login_required, authorize
 from utils.error_handler import *
 
@@ -11,11 +11,11 @@ hr = Blueprint("hr", __name__, static_folder='static', template_folder='template
 
 @hr.route('/')
 @login_required
-@authorize(my_roles=['Hr'])
+@authorize(my_roles=['Hr','Admin'])
 @try_except
 def home_view():
-    # hr.delete()
-    # hr.post()
-    # hr.get()
-    # hr.update()
+    HrQueryDelete.delete()
+    HrQueryPost.post()
+    HrQueryGet.get()
+    HrQueryUpdate.update()
     return render_template('hr/index.html')
