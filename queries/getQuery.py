@@ -19,16 +19,16 @@ class Sales:
         pass
 
 
-class Writers:
+class Production:
 
     def get(self):
         pass
 
 
-class Developers:
+# class Developers:
 
-    def get(self):
-        pass
+#     def get(self):
+#         pass
 
 
 
@@ -36,5 +36,5 @@ class Developers:
 AdminQueryGet = Admin()
 HrQueryGet = Hr()
 SaleQueryGet = Sales()
-DeveloperQueryGet = Developers()
-WriterQueryGet = Writers()
+ProductionQueryGet = Production()
+# DeveloperQueryGet = Developers()

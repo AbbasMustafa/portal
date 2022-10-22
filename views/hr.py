@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, url_for, redirect
 from queries.deleteQuery import HrQueryDelete
 from queries.updateQuery import HrQueryUpdate
 from queries.getQuery import HrQueryGet
@@ -11,7 +11,7 @@ hr = Blueprint("hr", __name__, static_folder='static', template_folder='template
 
 @hr.route('/')
 @login_required
-@authorize(my_roles=['Hr','Admin'])
+@authorize(my_roles=['Human Resource'])
 @try_except
 def home_view():
     HrQueryDelete.delete()
@@ -19,3 +19,4 @@ def home_view():
     HrQueryGet.get()
     HrQueryUpdate.update()
     return render_template('hr/index.html')
+    # return redirect(url_for('superAdmin.home_view'))

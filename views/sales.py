@@ -11,7 +11,7 @@ sale = Blueprint("sale", __name__, static_folder='static', template_folder='temp
 
 @sale.route('/')
 @login_required
-@authorize(my_roles=['Sale','Admin'])
+@authorize(my_roles=['Sales'])
 @try_except
 def home_view():
     SaleQueryGet.get()

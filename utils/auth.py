@@ -18,7 +18,7 @@ def authorize(my_roles=[]):
     def decorator(my_func):
         @wraps(my_func)
         def wrapper():
-            if session['user_role'] in my_roles:
+            if session['allowed'] in my_roles:
                 return my_func()
             else:
                 return "You are Unauthorize to access this route"

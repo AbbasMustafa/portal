@@ -3,8 +3,7 @@ from config import *
 from views.super_admin import superAdmin
 from views.hr import hr
 from views.sales import sale
-from views.writers import writer
-from views.developers import developer
+from views.production import production
 from utils.error_handler import *
 from utils.auth import *
 from utils.redirectRouter import *
@@ -18,8 +17,8 @@ from queries.globalQuery import *
 app.register_blueprint(superAdmin, url_prefix = '/admin')
 app.register_blueprint(hr, url_prefix = '/hr')
 app.register_blueprint(sale, url_prefix = '/sale')
-app.register_blueprint(writer, url_prefix = '/writer')
-app.register_blueprint(developer, url_prefix = '/developer')
+# app.register_blueprint(writer, url_prefix = '/writer')
+app.register_blueprint(production, url_prefix = '/developer')
 
 
 @app.route('/', methods=['GET','POST'])
@@ -31,6 +30,7 @@ def login_view():
         password = request.form.get('pass')
         return_data = login_query(user_name, password)
         if return_data:
+            session['allowed'] = return_data[0]['department_name']
             session['user_role'] = return_data[0]['role_name']
             return route_to()
         else:

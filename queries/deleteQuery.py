@@ -18,20 +18,20 @@ class Sales:
         pass
 
 
-class Writers:
+
+class Production:
 
     def delete(self):
         pass
 
 
-class Developers:
+# class Writers:
 
-    def delete(self):
-        pass
-
+#     def delete(self):
+#         pass
 
 AdminQueryDelete = Admin()
 HrQueryDelete = Hr()
 SaleQueryDelete = Sales()
-DeveloperQueryDelete = Developers()
-WriterQueryDelete = Writers()
+ProductionQueryDelete = Production()
+# WriterQueryDelete = Writers()

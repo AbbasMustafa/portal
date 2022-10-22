@@ -10,7 +10,7 @@ superAdmin = Blueprint("superAdmin", __name__, static_folder='static', template_
 
 @superAdmin.route('/')
 @login_required
-@authorize(my_roles=['Admin'])
+@authorize(my_roles=['Administration'])
 @try_except
 def home_view():
     AdminQueryGet.get()

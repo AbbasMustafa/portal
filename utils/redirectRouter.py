@@ -6,20 +6,18 @@ from utils.error_handler import *
 def route_to():
     if 'user_role' in session:
         
-        if session['user_role'] == 'Admin':
+        if session['allowed'] == 'Administration':
             return redirect(url_for('superAdmin.home_view'))
         
-        elif session['user_role'] == 'Hr':
+        elif session['allowed'] == 'Human Resource':
             return redirect(url_for('hr.home_view'))
         
-        elif session['user_role'] == 'Sale':
+        elif session['allowed'] == 'Sales':
             return redirect(url_for('sale.home_view'))
         
-        elif session['user_role'] == 'Developer':
-            return redirect(url_for('developer.home_view'))
+        elif session['allowed'] == 'Production':
+            return redirect(url_for('production.home_view'))
 
-        elif session['user_role'] == 'Writer':
-            return redirect(url_for('writer.home_view'))
     
     else:
         return 'Login First'

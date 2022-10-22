@@ -18,20 +18,20 @@ class Sales:
         pass
 
 
-class Writers:
+class Production:
 
     def update(self):
         pass
 
 
-class Developers:
+# class Developers:
     
-    def update(self):
-        pass
+#     def update(self):
+#         pass
 
 
 AdminQueryUpdate = Admin()
 HrQueryUpdate = Hr()
 SaleQueryUpdate = Sales()
-DeveloperQueryUpdate = Developers()
-WriterQueryUpdate = Writers()
+ProductionQueryUpdate = Production()
+# DeveloperQueryUpdate = Developers()

@@ -18,16 +18,16 @@ class Sales:
         pass
 
 
-class Writers:
+class Production:
 
     def post(self):
         pass
 
 
-class Developers:
+# class Developers:
 
-    def post(self):
-        pass
+#     def post(self):
+#         pass
 
 
 
@@ -35,5 +35,5 @@ class Developers:
 AdminQueryPost = Admin()
 HrQueryPost = Hr()
 SaleQueryPost = Sales()
-DeveloperQueryPost = Developers()
-WriterQueryPost = Writers()
+ProductionQueryPost = Production()
+# DeveloperQueryPost = Developers()
