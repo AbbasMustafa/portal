@@ -20,6 +20,8 @@ def authorize(my_roles=[]):
         def wrapper():
             if session['allowed'] in my_roles:
                 return my_func()
+            # if my_roles in session['allowed']:
+            #     return my_func()
             else:
                 return "You are Unauthorize to access this route"
 

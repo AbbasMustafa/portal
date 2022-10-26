@@ -32,9 +32,13 @@ def login_view():
         if return_data:
             session['allowed'] = return_data[0]['department_name']
             session['user_role'] = return_data[0]['role_name']
+            session['emp_name'] = return_data[0]['employee_name']
+            session['designation'] = return_data[0]['designation']
             return route_to()
+            # session['allowed'] = ['Administration', 'Human Resource', 'Sales']
+
         else:
-            return 'Wrong Credentials'
+            return 'Wrong Credentials Or You have no acces to portal'
     else:
         return render_template('login.html')
 

@@ -10,7 +10,7 @@ from utils.error_handler import *
 sale = Blueprint("sale", __name__, static_folder='static', template_folder='templates/sale')
 
 @sale.route('/')
-@login_required
+# @login_required
 @authorize(my_roles=['Sales'])
 @try_except
 def home_view():

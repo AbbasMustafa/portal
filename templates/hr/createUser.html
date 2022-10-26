@@ -1,0 +1,221 @@
+{% extends './hr/base.html' %}
+
+{% block body %}
+
+		<style>
+			.badge{
+				font-size:1.3em;
+				font-weight: normal;
+				margin-bottom: 25px;
+			}
+			.active{
+				display: none;
+			}
+			option{
+				color: black;
+			}
+		</style>
+
+		<!--end header -->
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+
+				<!--breadcrumb-->
+				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+					<div class="ps-3">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb mb-0 p-0">
+								<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+								</li>
+								<li class="breadcrumb-item " aria-current="page">Add New User</li>
+							</ol>
+						</nav>
+					</div>
+					
+				</div>
+				<!--end breadcrumb-->
+
+              <div class="card">
+				  <div class="card-body p-4">
+					  <h5 id="card-title" class="card-title">Add New User</h5>
+					  <hr/>
+                       <div class="form-body mt-4">
+					    <div class="row">
+						   	<div class="col-lg-12">
+								<form id="userInformation" method="post" action="{{url_for('hr.create_user_view')}}">
+								<div class="row border border-3 p-4 rounded">
+
+									<h5 class="badge">Company Detail</h5>
+
+									<div class="mb-3 col-md-4">
+										<label for="employeeName" class="form-label">Employee Name</label>
+										<input name="employeeName" type="text" class="form-control" id="employeName" placeholder="Enter Employee Name" required>
+									</div>
+
+									<div class="mb-3 col-md-4">
+										<label for="password" class="form-label">Password</label>
+										<input name="password" type="text" class="form-control" id="password" placeholder="Enter password here..." required>
+									</div>
+
+									<div class="mb-3 col-md-4">
+										<label id="pass-not-match" for="confPassword" class="form-label">Confirm Password</label>
+										<input name="confPassword" type="text" class="form-control" id="confPassword" placeholder="Enter Confirm Password" required>
+									</div>
+
+									<div class="mb-3 col-md-4">
+										<label for="companyEmail" class="form-label">Company Email</label>
+										<input name="companyEmail" type="text" class="form-control" id="companyEmail" placeholder="Enter Company Email" required>
+									</div>
+
+									<div class="mb-3 col-md-4">
+										<label for="department" class="form-label">Department</label>
+										<select name="department" id="department" class="form-control" required>
+											<option value="" selected hidden disabled> Select Department</option>
+											{% for dept in department %}
+											<option value="{{dept.department_id}}">{{dept.department_name}}</option>
+											{% endfor %}
+										</select>
+									</div>
+
+									<div class="mb-3 col-md-4">
+										<label for="managers" class="form-label">Managers</label>
+										<select name="managers" id="managers"  class="form-control" required>
+											<option value="" selected hidden disabled>Select Managers</option>
+											{% for manager in manager %}
+											<option value="{{manager.manager_id}}">{{manager.manager_name}} - ( {{manager.manager_department}} ) </option>
+											{% endfor %}
+										</select>
+									</div>
+
+									<div class="mb-3 col-md-4">
+										<label for="role" class="form-label">Role</label>
+										<select name="role" id="role" class="form-control" required>
+											<option value="" selected hidden disabled>Select Role</option>
+											{% for role in role %}
+											<option value="{{role.role_id}}">{{role.role_name}}</option>
+											{% endfor %}
+										</select>
+									</div>
+
+									<div class="mb-3 col-md-4">
+										<label for="designation" class="form-label">Designation</label>
+										<input name="designation" type="text" class="form-control" id="designation" placeholder="Enter Designation" required>
+									</div>
+
+									
+
+									<div class="mb-3 col-md-4">
+										<label for="salary" class="form-label">Salary</label>
+										<input name="salary" type="number" class="form-control" id="salary" placeholder="Enter Salary" min="1" required>
+									</div>
+
+									<hr>
+									<h5 class="badge">Personal Detail</h5>
+
+									<div class="mb-3 col-md-4">
+										<label for="contactNo" class="form-label">Contact No</label>
+										<input name="contactNo" type="text" class="form-control" id="contactNo" placeholder="Enter Contact No" required>
+									</div>
+
+									<div class="mb-3 col-md-4">
+										<label for="CNIC" class="form-label">CNIC</label>
+										<input name="CNIC" type="text" class="form-control" id="CNIC" placeholder="00000-0000000-0" required>
+									</div>
+
+									<div class="mb-3 col-md-4">
+										<label for="DOB" class="form-label">Date Of Birth</label>
+										<input name="DOB" type="Date" class="form-control" id="DOB" placeholder="Enter Designation" required>
+									</div>
+
+
+									<div class="mb-3 col-md-4">
+										<label for="city" class="form-label">City</label>
+										<input name="city" type="text" class="form-control" id="city" placeholder="Enter city" required>
+									</div>
+
+									<div class="mb-3 col-md-4">
+										<label for="personalEmail" class="form-label">Personal Email</label>
+										<input name="personalEmail" type="email" class="form-control" id="personalEmail" placeholder="Enter Personal Email Here.." required>
+									</div>
+
+									<div class="mb-3 col-md-12">
+										<label for="address" class="form-label">Employee Address</label>
+										<textarea class="form-control" name="address" id="address" cols="30" rows="1" placeholder="Enter Address Here..." required></textarea>
+									</div>
+
+									<hr>
+									<h5 class="badge">Bank Account Detail</h5>
+
+									<div class="mb-3 col-md-6">
+										<label for="accountTitle" class="form-label">Account Title</label>
+										<input name="accountTitle" type="text" class="form-control" id="accountTitle" placeholder="Enter Account Title Here..">
+									</div>
+
+									<div class="mb-3 col-md-6">
+										<label for="accountNo" class="form-label">Account No / IBN</label>
+										<input name="accountNo" type="text" class="form-control" id="accountNo" placeholder="Enter Account No Here..">
+									</div>
+
+									<div class="mt-3 mb-3 col-md-12">
+										<input type="submit" class="btn btn-primary w-100">
+									</div>
+								</div>
+								</form>
+						   	</div>
+					   </div><!--end row-->
+					</div>
+				  </div>
+			  </div>
+
+			</div>
+		</div>
+
+		<script>
+			const password = document.querySelector('#password')
+			const confPassword = document.querySelector('#confPassword')
+
+			function passwordCheck(flag){
+				if(password.value === "" && confPassword.value === ""){
+					document.querySelector('#pass-not-match').textContent = "Confirm Password"
+					document.querySelector('#pass-not-match').style.color = "rgb(255 255 255 / 70%)"
+				}else if(flag && (password.value !== confPassword.value)){
+					document.querySelector('#pass-not-match').textContent = "Password Not Match!"
+					document.querySelector('#pass-not-match').style.color = 'red'
+					document.querySelector('#pass-not-match').classList.remove('active');
+				}else if(flag){
+					document.querySelector('#pass-not-match').textContent = "Password Match!"
+					document.querySelector('#pass-not-match').style.color = 'rgba(153, 245, 39, 0.55)'
+				}
+			}
+
+			document.querySelector('#confPassword').addEventListener('input', (event)=>{
+				passwordCheck(true);
+			})
+
+			document.querySelector('#password').addEventListener('input', (event)=>{
+				passwordCheck(false);
+			})
+
+
+
+			document.querySelector('#userInformation').addEventListener('submit', (event)=>{
+				if(password.value !== confPassword.value){
+					location.href = '#card-title'
+					event.preventDefault()
+				}	
+			})
+
+			document.querySelector('#CNIC').addEventListener('input', (event)=>{
+				if(event.data >= 0 && event.data <= 9){
+					if(event.data !== null && (event.currentTarget.value.length === 5 || event.currentTarget.value.length === 13)){
+						event.currentTarget.value += "-";
+					}
+					event.currentTarget.value = event.currentTarget.value.substring(0,15);
+				}else{
+					const curLength = event.currentTarget.value.length;
+					event.currentTarget.value = event.currentTarget.value.substring(0,curLength-1)
+				}
+			})
+		</script>
+{% endblock %}
