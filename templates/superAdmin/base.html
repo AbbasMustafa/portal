@@ -12,9 +12,11 @@
 	<!--favicon-->
 	<link rel="icon" href="{{ url_for('static', filename='images/favicon-32x32.png') }}" type="image/png" />
 	<!--plugins-->
+	<link href="{{url_for('static', filename='plugins/simplebar/css/simplebar.css')}}" rel="stylesheet" />
+	<link href="{{url_for('static', filename='plugins/perfect-scrollbar/css/perfect-scrollbar.css')}}" rel="stylesheet" />
+	<link href="{{url_for('static', filename='plugins/metismenu/css/metisMenu.min.css')}}" rel="stylesheet" />
+	<link href="{{url_for('static', filename='plugins/datatable/css/dataTables.bootstrap5.min.css')}}" rel="stylesheet" />
 	<link href="{{ url_for('static', filename='plugins/vectormap/jquery-jvectormap-2.0.2.css') }}" rel="stylesheet"/>
-	<link href="{{ url_for('static', filename='plugins/simplebar/css/simplebar.css') }}" rel="stylesheet" />
-	<link href="{{ url_for('static', filename='plugins/perfect-scrollbar/css/perfect-scrollbar.css') }}" rel="stylesheet" />
 	<link href="{{ url_for('static', filename='plugins/metismenu/css/metisMenu.min.css') }}" rel="stylesheet" />
 	<!-- loader-->
 	<link href="{{ url_for('static', filename='css/pace.min.css') }}" rel="stylesheet" />
@@ -22,12 +24,11 @@
 	<!-- Bootstrap CSS -->
 	<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
 	<link href="{{ url_for('static', filename='css/bootstrap-extended.css') }}" rel="stylesheet">
-	<link href="{{ url_for('static', filename='css/bootstrap-extended.css') }}" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&amp;display=swap" rel="stylesheet">
 	<link href="{{ url_for('static', filename='css/app.css') }}" rel="stylesheet">
 	<link href="{{ url_for('static', filename='css/icons.css') }}" rel="stylesheet">
-    
 	
+	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<title>Ideal Writers</title>
 </head>
 
@@ -698,8 +699,8 @@
 						<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 							<img src="{{ url_for('static', filename='images/avatars/assigned.png') }}" class="user-img" alt="user avatar">
 							<div class="user-info ps-3">
-								<p class="user-name mb-0">{{session['emp_name']}}</p>
-								<p class="designattion mb-0">{{session['designation']}}</p>
+								<p class="user-name mb-0">{{ session['emp_name'] }}</p>
+								<p class="designattion mb-0">{{ session['designation'] }}</p>
 							</div>
 						</a>
 						<ul class="dropdown-menu dropdown-menu-end">
@@ -716,7 +717,7 @@
 							<li>
 								<div class="dropdown-divider mb-0"></div>
 							</li>
-							<li><a class="dropdown-item" href="{{url_for('logout_view')}}"><i class='bx bx-log-out-circle'></i><span>Logout</span></a>
+							<li><a class="dropdown-item" href="{{ url_for('logout_view') }}"><i class='bx bx-log-out-circle'></i><span>Logout</span></a>
 							</li>
 						</ul>
 					</div>
@@ -726,7 +727,7 @@
 
         {% block body %}
         {% endblock %}
-
+		
         	<!--end page wrapper -->
 		<!--start overlay-->
 		<div class="overlay toggle-icon"></div>
@@ -799,6 +800,7 @@
 	  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 	<!--app JS-->
 	<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+	
 </body>
 
 

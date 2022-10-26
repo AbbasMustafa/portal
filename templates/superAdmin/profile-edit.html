@@ -1,0 +1,149 @@
+{% extends './superAdmin/base.html' %}
+{% block body %}
+		<style>
+			input, select, textarea	{
+				font-size: 0.9em !important;
+			}
+		</style>
+		<!--end header -->
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--breadcrumb-->
+				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+					<div class="ps-3">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb mb-0 p-0">
+								<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+								</li>
+								<li class="breadcrumb-item active" aria-current="page">Update User</li>
+							</ol>
+						</nav>
+					</div>
+					
+				</div>
+				<!--end breadcrumb-->
+				<div class="container">
+					<div class="main-body">
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="card">
+									<div class="card-body">
+											<form id="userInformation" action="/admin/edit-user/{{resp_user_detail[0]['employee_id']}}" method="POST">
+											<div class="row">
+			
+												<h5 class="badge">Company Detail</h5>
+			
+												<div class="mb-3 col-md-4">
+													<label for="employeeName" class="form-label">Employee Name</label>
+													<input value="{{resp_user_detail[0]['employee_name']}}" name="employeeName" type="text" class="form-control" id="employeName" placeholder="Enter Employee Name" >
+												</div>
+			
+												<div class="mb-3 col-md-4">
+													<label for="companyEmail" class="form-label">Company Email</label>
+													<input value="{{resp_user_detail[0]['login_email']}}" name="companyEmail" type="text" class="form-control" id="companyEmail" placeholder="Enter Company Email" >
+												</div>
+			
+												<div class="mb-3 col-md-4">
+													<label for="department" class="form-label">Department</label>
+													<select name="department" id="department" class="form-control" >
+														<option value="{{resp_user_detail[0]['employee_department_id']}}">{{resp_user_detail[0]['department_name']}}</option>
+														{% for dept in dept %}
+														<option value="{{dept.department_id}}">{{dept.department_name}}</option>
+														{% endfor %}
+													</select>
+												</div>
+			
+												<div class="mb-3 col-md-4">
+													<label for="managers" class="form-label">Managers</label>
+													<select name="managers" id="managers"  class="form-control" >
+														<option value="{{resp_user_detail[0]['employee_manager_id']}}">{{resp_user_detail[0]['manager_name']}}</option>
+														{% for manager in manager %}
+														<option value="{{manager.manager_id}}">{{manager.manager_name}} - ( {{manager.manager_department}} ) </option>
+														{% endfor %}
+													</select>
+												</div>
+			
+												<div class="mb-3 col-md-4">
+													<label for="role" class="form-label">Role</label>
+													<select name="role" id="role" class="form-control" >
+														<option value="{{resp_user_detail[0]['role_id']}}">{{resp_user_detail[0]['role_name']}}</option>
+														{% for role in role %}
+														<option value="{{role.role_id}}">{{role.role_name}}</option>
+														{% endfor %}
+													</select>
+												</div>
+			
+												<div class="mb-3 col-md-4">
+													<label for="designation" class="form-label">Designation</label>
+													<input value="{{resp_user_detail[0]['designation']}}" name="designation" type="text" class="form-control" id="designation" placeholder="Enter Designation" >
+												</div>
+			
+												
+			
+												<div class="mb-3 col-md-4">
+													<label for="salary" class="form-label">Salary</label>
+													<input value="{{resp_user_detail[0]['salary']}}" name="salary" type="number" class="form-control" id="salary" placeholder="Enter Salary" min="1" >
+												</div>
+			
+												<hr>
+												<h5 class="badge">Personal Detail</h5>
+			
+												<div class="mb-3 col-md-4">
+													<label for="contactNo" class="form-label">Contact No</label>
+													<input value="{{resp_user_detail[0]['employee_contact_no']}}" name="contactNo" type="text" class="form-control" id="contactNo" placeholder="Enter Contact No" >
+												</div>
+			
+												<div class="mb-3 col-md-4">
+													<label for="CNIC" class="form-label">CNIC</label>
+													<input value="{{resp_user_detail[0]['cnic']}}" name="CNIC" type="text" class="form-control" id="CNIC" placeholder="00000-0000000-0" >
+												</div>
+			
+												<div class="mb-3 col-md-4">
+													<label for="DOB" class="form-label">Date Of Birth</label>
+													<input value="{{resp_user_detail[0]['date_of_birth']}}" name="DOB" type="Date" class="form-control" id="DOB" placeholder="Enter Designation" >
+												</div>
+			
+			
+												<div class="mb-3 col-md-4">
+													<label for="city" class="form-label">City</label>
+													<input value="{{resp_user_detail[0]['employee_city']}}" name="city" type="text" class="form-control" id="city" placeholder="Enter city" >
+												</div>
+			
+												<div class="mb-3 col-md-4">
+													<label for="personalEmail" class="form-label">Personal Email</label>
+													<input value="{{resp_user_detail[0]['personal_email']}}" name="personalEmail" type="email" class="form-control" id="personalEmail" placeholder="Enter Personal Email Here.." >
+												</div>
+			
+												<div class="mb-3 col-md-12">
+													<label for="address" class="form-label">Employee Address</label>
+													<textarea value="{{resp_user_detail[0]['employee_address']}}" class="form-control" name="address" id="address" cols="30" rows="1" placeholder="Enter Address Here..." >{{resp_user_detail[0]['employee_address']}}</textarea>
+												</div>
+			
+												<hr>
+												<h5 class="badge">Bank Account Detail</h5>
+			
+												<div class="mb-3 col-md-6">
+													<label for="accountTitle" class="form-label">Account Title</label>
+													<input  value="{{resp_user_detail[0]['bank_account_title']}}" name="accountTitle" type="text" class="form-control" id="accountTitle" placeholder="Enter Account Title Here..">
+												</div>
+			
+												<div class="mb-3 col-md-6">
+													<label for="accountNo" class="form-label">Account No / IBN</label>
+													<input value="{{resp_user_detail[0]['bank_account_number']}}" name="accountNo" type="text" class="form-control" id="accountNo" placeholder="Enter Account No Here..">
+												</div>
+			
+												<div class="mt-3 mb-3 col-md-12">
+													<input type="submit" value="SAVE UPDATE" class="btn btn-primary w-100">
+												</div>
+											</div>
+											</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+{% endblock %}
