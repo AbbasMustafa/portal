@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, url_for, render_template, request
+from flask import Blueprint, jsonify, redirect, url_for, render_template, request, json
 from queries.getQuery import AdminQueryGet
 from queries.deleteQuery import AdminQueryDelete
 from queries.updateQuery import AdminQueryUpdate
@@ -45,10 +45,33 @@ def create_user_view():
 @authorize(my_roles=['Administration'])
 @try_except
 def list_user_view():
+    if request.method =='POST':
 
-    resp_all_user = AdminQueryGet.get_all_user()
+        id = request.get_json()['userId']
+        body = AdminQueryGet.password_request(id)
 
-    return render_template('superAdmin/all-user.html', users = resp_all_user)
+        return jsonify(body=body[0])
+        
+
+    else:
+        resp_all_user = AdminQueryGet.get_all_user()
+        return render_template('superAdmin/all-user.html', users = resp_all_user)
+
+
+
+@superAdmin.route('/delete-user', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
+def delete_user_view():
+    if request.method =='POST':
+
+        id = request.get_json()['userId']
+        active = request.get_json()['active']
+        body = AdminQueryDelete.delete_user(id, active)
+
+        return jsonify(body=body)
+
 
 
 
@@ -69,3 +92,15 @@ def edit_user_view(id):
     resp_manager = AdminQueryGet.get_Manager()
     resp_Role = AdminQueryGet.get_Role()
     return render_template('superAdmin/profile-edit.html', resp_user_detail = user_details, dept=resp_department, manager=resp_manager, role=resp_Role)
+
+
+
+@superAdmin.route('/employee-info/<id>', methods=['GET', 'POST'])
+@login_required_with_param
+@authorize_with_param(my_roles=['Administration'])
+@try_except_with_param
+def employee_info_view(id):
+
+    emp_infor = AdminQueryGet.empInfo(id)
+
+    return render_template('superAdmin/emp-info.html', emp_infor=emp_infor)

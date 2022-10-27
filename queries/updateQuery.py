@@ -39,6 +39,7 @@ class Admin:
         mysql.connection.commit()
 
 
+
 class Hr:
     
     def edit_user(self, formData, id):

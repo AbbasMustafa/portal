@@ -21,6 +21,7 @@ app.register_blueprint(sale, url_prefix = '/sale')
 app.register_blueprint(production, url_prefix = '/developer')
 
 
+
 @app.route('/', methods=['GET','POST'])
 @app.route('/login', methods=['GET','POST'])
 @try_except

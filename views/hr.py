@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, redirect, request
+from flask import Blueprint, render_template, url_for, redirect, request, jsonify
 from queries.deleteQuery import HrQueryDelete
 from queries.updateQuery import HrQueryUpdate
 from queries.getQuery import HrQueryGet
@@ -46,6 +46,13 @@ def create_user_view():
 @try_except
 def list_user_view():
 
+    if request.method =='POST':
+
+        id = request.get_json()['userId']
+        body = HrQueryGet.password_request(id)
+
+        return jsonify(body=body[0])
+
     resp_all_user = HrQueryGet.get_all_user()
 
     return render_template('hr/all-user.html', users = resp_all_user)
@@ -69,3 +76,30 @@ def edit_user_view(id):
     resp_manager = HrQueryGet.get_Manager()
     resp_Role = HrQueryGet.get_Role()
     return render_template('hr/profile-edit.html', resp_user_detail = user_details, dept=resp_department, manager=resp_manager, role=resp_Role)
+
+
+@hr.route('/delete-user', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Human Resource'])
+@try_except
+def delete_user_view():
+    if request.method =='POST':
+
+        id = request.get_json()['userId']
+        active = request.get_json()['active']
+        print(active, id)
+        body = HrQueryDelete.delete_user(id, active)
+
+        return jsonify(body=body)
+
+
+
+@hr.route('/employee-info/<id>', methods=['GET', 'POST'])
+@login_required_with_param
+@authorize_with_param(my_roles=['Human Resource'])
+@try_except_with_param
+def employee_info_view(id):
+
+    emp_infor = HrQueryGet.empInfo(id)
+
+    return render_template('hr/emp-info.html', emp_infor=emp_infor)
