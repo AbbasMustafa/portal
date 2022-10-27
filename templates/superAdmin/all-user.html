@@ -147,6 +147,7 @@
 		item.onclick = (event) => {
 			event.preventDefault();
 			const userId = event.currentTarget.dataset.userId;
+			const active = parseInt(event.currentTarget.id[1],10) ? 0 : 1;
 			Swal.fire({
 				title: 'Are you sure?',
 				text: "You won't be able to Ban this User!",
@@ -165,7 +166,7 @@
 						headers: {
 							"content-type": "application/json"
 						},
-						body: JSON.stringify({ userId })
+						body: JSON.stringify({ userId , active})
 					})
 						.then(response => response.json())
 						.then(body => {
