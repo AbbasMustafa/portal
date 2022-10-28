@@ -69,7 +69,7 @@ class Admin:
         return return_data
 
 
-class Hr:
+class Hr (Admin):
 
     def get_Role(self):
         cursor = mysql.connection.cursor()
@@ -84,58 +84,6 @@ class Hr:
         cursor.execute(my_query)
         return_data = cursor.fetchall()
         return return_data
-    
-    def get_Manager(self):
-        cursor = mysql.connection.cursor()
-        my_query = """SELECT * FROM manager_table"""
-        cursor.execute(my_query)
-        return_data = cursor.fetchall()
-        return return_data
-
-    def get_all_user(self):
-        cursor = mysql.connection.cursor()
-        my_query = """SELECT employee_id, employee_name, designation, salary, register_date, manager_name, 
-        department_name, active FROM employee_detail INNER JOIN manager_table ON
-        employee_detail.employee_manager_id = manager_table.manager_id INNER JOIN department ON 
-        employee_detail.employee_department_id = department.department_id INNER JOIN login_credential ON
-        login_credential.employee_id_fk = employee_detail.employee_id"""
-        cursor.execute(my_query)
-        return_data = cursor.fetchall()
-        return return_data
-
-    def edit_user_get(self, id):
-        cursor = mysql.connection.cursor()
-        my_query = f"""SELECT employee_id, employee_name, employee_address, employee_city, employee_contact_no, employee_manager_id, personal_email, login_email,
-        employee_department_id, designation, salary, date_of_birth, cnic, bank_account_title, role_name, manager_name, department_name,
-        bank_account_number, register_date, role_id FROM login_credential INNER JOIN employee_detail 
-        ON login_credential.employee_id_fk = employee_detail.employee_id
-        INNER JOIN department ON employee_detail.employee_department_id = department.department_id INNER JOIN 
-        manager_table ON employee_detail.employee_manager_id = manager_table.manager_id INNER JOIN user_role ON
-        employee_detail.employee_role_id = user_role.role_id WHERE employee_id = {id} """
-        cursor.execute(my_query)
-        return_data = cursor.fetchall()
-        return return_data
-
-    def password_request(self, id):
-        cursor = mysql.connection.cursor()
-        my_query = f"""SELECT login_email, login_password FROM login_credential WHERE employee_id_fk = {id} """
-        cursor.execute(my_query)
-        return_data = cursor.fetchall()
-        return return_data
-
-    def empInfo(self, id):
-        cursor = mysql.connection.cursor()
-        my_query = f"""SELECT employee_name, employee_address, employee_city, employee_contact_no, personal_email, login_email,
-        designation, salary, date_of_birth, cnic, bank_account_title, role_name, manager_name, department_name,
-        bank_account_number, register_date FROM login_credential INNER JOIN employee_detail 
-        ON login_credential.employee_id_fk = employee_detail.employee_id
-        INNER JOIN department ON employee_detail.employee_department_id = department.department_id INNER JOIN 
-        manager_table ON employee_detail.employee_manager_id = manager_table.manager_id INNER JOIN user_role ON
-        login_credential.user_role_fk = user_role.role_id WHERE employee_id = {id}"""
-        cursor.execute(my_query)
-        return_data = cursor.fetchall()
-        return return_data
-        
 
 class Sales:
 

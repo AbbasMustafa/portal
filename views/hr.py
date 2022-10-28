@@ -64,6 +64,7 @@ def list_user_view():
 @authorize_with_param(my_roles=['Human Resource'])
 @try_except_with_param
 def edit_user_view(id):
+    print(id)
     if request.method == 'POST':
         if len(request.form) == 15:
             HrQueryUpdate.edit_user(request.form, id)
