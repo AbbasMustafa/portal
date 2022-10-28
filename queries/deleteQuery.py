@@ -14,12 +14,6 @@ class Hr (Admin):
 
     def delete(self):
         pass
-    # def delete_user(self, id, active):
-    #     cursor = mysql.connection.cursor()
-    #     my_query = f"""UPDATE login_credential SET active = {active} WHERE employee_id_fk={id}"""
-    #     cursor.execute(my_query)
-    #     mysql.connection.commit()
-    #     return 'User Deleted'
 
 
 class Sales:
