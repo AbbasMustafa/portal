@@ -10,8 +10,14 @@
   	</head>
   	<body>
 		<div class="limiter">
-      		<div class="black-screen container-login100">
+			{% if message %}
+				<div class="alert alert-danger text-center credential-mesg">{{ message }}</div>
+      		{% endif %}
+			<div class="black-screen container-login100">
         		<div class="container wrap-login100">
+					<div class="company-logo text-center">
+						<img class="img-fluid rounded" src="{{ url_for('static', filename='images/company-logo.png') }}" alt="webNike Logo">
+					</div>
           			<form  class="login100-form validate-form" method="POST" action="{{url_for('login_view')}}">
             			<div class="wrap-input100 validate-input" data-validate="Valid email is: a@b.c">
               				<input class="email input100" type="text" name="username" autocomplete="off" />
@@ -28,6 +34,8 @@
 							<input type="checkbox" name="remeber" id="remember-me"/>
 							<label class="remeber-me" for="remember-me">Remeber Me</label>
 						</div> -->
+						<a class="forget-password" href="">Forget Password?</a>
+						<div class="clearFix"></div>
 						<div class="container-login100-form-btn">
 							<div class="wrap-login100-form-btn">
 							<div class="login100-form-bgbtn"></div>

@@ -25,8 +25,13 @@ File: app.css
   - Forms
   - Responsive
 */
-
-
+input {
+	color-scheme: dark;
+}
+.card-body{
+	/* text-transform: uppercase; */
+	background:rgba(0,0,0,0.3);
+}
 body {
 
 	font-size: 14px;

@@ -40,7 +40,8 @@ def login_view():
             # session['allowed'] = ['Administration', 'Human Resource', 'Sales']
 
         else:
-            return 'Wrong Credentials Or You have no acces to portal'
+            message = 'Wrong Credentials Or You have no acces to portal'
+            return render_template('login.html', message=message)
     else:
         return render_template('login.html')
 
