@@ -26,24 +26,28 @@ app.register_blueprint(production, url_prefix = '/developer')
 @app.route('/login', methods=['GET','POST'])
 @try_except
 def login_view():
-    if request.method == "POST":
-        user_name = request.form.get('username')
-        password = request.form.get('pass')
-        return_data = login_query(user_name, password)
-        if return_data:
-            session['allowed'] = return_data[0]['department_name']
-            session['user_role'] = return_data[0]['role_name']
-            session['emp_name'] = return_data[0]['employee_name']
-            session['designation'] = return_data[0]['designation']
-            session['emp_id'] = return_data[0]['employee_id_fk']
-            return route_to()
-            # session['allowed'] = ['Administration', 'Human Resource', 'Sales']
+    if 'user_name' in session:
+        return route_to()
 
-        else:
-            message = 'Wrong Credentials Or You have no acces to portal'
-            return render_template('login.html', message=message)
     else:
-        return render_template('login.html')
+        if request.method == "POST":
+            user_name = request.form.get('username')
+            password = request.form.get('pass')
+            return_data = login_query(user_name, password)
+            if return_data:
+                session['allowed'] = return_data[0]['department_name']
+                session['user_role'] = return_data[0]['role_name']
+                session['emp_name'] = return_data[0]['employee_name']
+                session['designation'] = return_data[0]['designation']
+                session['emp_id'] = return_data[0]['employee_id_fk']
+                return route_to()
+                # session['allowed'] = ['Administration', 'Human Resource', 'Sales']
+
+            else:
+                message = 'Wrong Credentials Or You have no acces to portal'
+                return render_template('login.html', message=message)     
+        else:
+            return render_template('login.html')
 
 
 @app.route('/logout')
