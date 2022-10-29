@@ -7,7 +7,8 @@
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css')}}" />
-  	</head>
+		<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	</head>
   	<body>
 		<div class="limiter">
 			{% if message %}
@@ -30,11 +31,13 @@
 							<input class="password input100" type="password" name="pass" autocomplete="off">
 							<span class="focus-password focus-input100" data-placeholder="Password"></span>
             			</div>
+						
 						<!-- <div data-validate="remember me">
 							<input type="checkbox" name="remeber" id="remember-me"/>
 							<label class="remeber-me" for="remember-me">Remeber Me</label>
 						</div> -->
-						<a class="forget-password" href="">Forget Password?</a>
+						
+						
 						<div class="clearFix"></div>
 						<div class="container-login100-form-btn">
 							<div class="wrap-login100-form-btn">
@@ -43,11 +46,51 @@
 							</div>
 						</div>
           			</form>
+
+					<button onclick="sweetAlert()" class="forget-password">Forget Password?</button>
+
         		</div>
       		</div>
-    	</div>
-		
+    	</div>	
 	<script>
+
+		function sweetAlert(){
+			Swal.fire({
+			title: 'Please enter your email address',
+			input: 'text',
+			inputAttributes: {
+				autocapitalize: 'off'
+			},
+			showCancelButton: true,
+			confirmButtonText: 'Send Password',
+			showLoaderOnConfirm: true,
+			preConfirm: (email) => {
+				const url = "";
+				return fetch(url, {
+					method: "POST",
+					headers: {
+						"Content-Type":"application/json"
+					},
+					body: JSON.stringify({email})
+				})
+				.then(response => response.json())
+				.then(body => {
+					Swal.showValidationMessage(
+						`${body.message}`
+					)
+				})
+			},
+			allowOutsideClick: () => !Swal.isLoading()
+			}).then((result) => {
+			if (result.isConfirmed) {
+				Swal.fire({
+				title: `${result.value.login}'s avatar`,
+				imageUrl: result.value.avatar_url
+				})
+			}
+			})
+		}
+
 		let btnShow = document.querySelector('.btn-show-pass .fa-eye');
 		let password = document.querySelector('.password');
 		let email = document.querySelector('.email');
@@ -78,6 +121,8 @@
 		
 		labelHide(password, passwordText);
 		labelHide(email, emailText);
+
+		
 	</script>
 
   </body>
