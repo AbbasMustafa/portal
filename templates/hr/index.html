@@ -36,7 +36,7 @@
 						<div class="col-lg-2 col-md-4 border-radius-left">
 							<div class="card-body">
 								<div class="d-flex align-items-center">
-									<h5 class="mb-0">0</h5>
+									<h5 class="mb-0">{{ banUser[0]['COUNT(login_email)'] + activeUser[0]['COUNT(login_email)'] }}</h5>
 									<div class="ms-auto">
                                         <i class='fa fa-globe fs-5 text-white'></i>
 									</div>
@@ -283,7 +283,7 @@
 								   <tbody>
 									<tr class="border-top">
 										<td><i class="bx bxs-circle text-white me-2"></i>Total Users</td>
-										<td>0</td>
+										<td>{{ banUser[0]['COUNT(login_email)'] + activeUser[0]['COUNT(login_email)'] }}</td>
 									  </tr>
 									  <tr>
 										<td><i class="bx bxs-circle text-light-2 me-2"></i>Present</td>
