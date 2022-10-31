@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, url_for, redirect, request, jsonify
-from queries.deleteQuery import HrQueryDelete
+from queries.deleteQuery import Hr, HrQueryDelete
 from queries.updateQuery import HrQueryUpdate
 from queries.getQuery import HrQueryGet
 from queries.postQuery import HrQueryPost
@@ -104,3 +104,14 @@ def employee_info_view(id):
     emp_infor = HrQueryGet.empInfo(id)
 
     return render_template('hr/emp-info.html', emp_infor=emp_infor)
+
+
+
+@hr.route('/user-status', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Human Resource'])
+@try_except
+def user_status_view():
+    userStatus = request.args.get('status')
+    filter_users = HrQueryGet.user_status(userStatus)
+    return render_template('hr/all-user.html', users = filter_users)

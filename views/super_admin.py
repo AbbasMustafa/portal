@@ -24,7 +24,7 @@ def home_view():
 @try_except
 def create_user_view():
     if request.method == 'POST':
-        if len(request.form) == 17:
+        if len(request.form) == 17 or len(request.form) == 18:
             AdminQueryPost.create_users(request.form)
         else: 
             return render_template('superAdmin/createUser.html', department=resp_department, manager=resp_manager, 
@@ -81,7 +81,7 @@ def delete_user_view():
 @try_except_with_param
 def edit_user_view(id):
     if request.method == 'POST':
-        if len(request.form) == 15:
+        if len(request.form) == 15 or len(request.form) == 16:
             AdminQueryUpdate.edit_user(request.form, id)
         else:
             return render_template('superAdmin/profile-edit.html', resp_user_detail = user_details, dept=resp_department, manager=resp_manager, role=resp_Role, error_msg = 'fill all field' )
@@ -91,7 +91,8 @@ def edit_user_view(id):
     resp_department = AdminQueryGet.get_Department()
     resp_manager = AdminQueryGet.get_Manager()
     resp_Role = AdminQueryGet.get_Role()
-    return render_template('superAdmin/profile-edit.html', resp_user_detail = user_details, dept=resp_department, manager=resp_manager, role=resp_Role)
+    resp_isAdmin = AdminQueryGet.is_manager(id)
+    return render_template('superAdmin/profile-edit.html', resp_user_detail = user_details, dept=resp_department, manager=resp_manager, role=resp_Role, isAdmin=resp_isAdmin)
 
 
 
@@ -104,3 +105,25 @@ def employee_info_view(id):
     emp_infor = AdminQueryGet.empInfo(id)
 
     return render_template('superAdmin/emp-info.html', emp_infor=emp_infor)
+
+
+
+@superAdmin.route('/user-status', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
+def user_status_view():
+    userStatus = request.args.get('status')
+    filter_users = AdminQueryGet.user_status(userStatus)
+    return render_template('superAdmin/all-user.html', users = filter_users)
+
+
+# @superAdmin.route('/add-department', methods=['GET', 'POST'])
+# @login_required
+# @authorize(my_roles=['Administration'])
+# @try_except
+# def add_depart_view():
+#     if request.method == 'POST':
+#         depart = request.get_json()['depart']
+#         message = AdminQueryPost.add_department(depart)
+#         return jsonify(message=message)

@@ -80,10 +80,20 @@
 												</div>
 			
 												
-			
 												<div class="mb-3 col-md-4">
 													<label for="salary" class="form-label">Salary</label>
 													<input value="{{resp_user_detail[0]['salary']}}" name="salary" type="number" class="form-control" id="salary" placeholder="Enter Salary" min="1" >
+												</div>
+
+												<div class="mt-4 col-md-4">
+													{% if isAdmin %}
+													<input name="deleteManager" type="checkbox" id="manager">
+													<label for="deleteManager" class="form-label mt-2">Delete Manager &nbsp;</label>
+													{% else %}
+													<input name="isManager" type="checkbox" id="manager">
+													<label for="isManager" class="form-label mt-2">Make Manager &nbsp;</label>
+													{% endif %}
+													
 												</div>
 			
 												<hr>

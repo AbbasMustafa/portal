@@ -65,7 +65,7 @@
 			confirmButtonText: 'Send Password',
 			showLoaderOnConfirm: true,
 			preConfirm: (email) => {
-				const url = "";
+				const url = "/forgot-password";
 				return fetch(url, {
 					method: "POST",
 					headers: {

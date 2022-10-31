@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, url_for, redirect
+from flask import Flask, jsonify, render_template, request, session, url_for, redirect
 from config import *
 from views.super_admin import superAdmin
 from views.hr import hr
@@ -26,7 +26,7 @@ app.register_blueprint(production, url_prefix = '/developer')
 @app.route('/login', methods=['GET','POST'])
 @try_except
 def login_view():
-    if 'user_name' in session:
+    if 'user_role' in session:
         return route_to()
 
     else:
@@ -50,6 +50,20 @@ def login_view():
             return render_template('login.html')
 
 
+@try_except
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password_view():
+    
+    if request.method == 'POST':
+        email = request.get_json()['email']
+        return_pass = get_password(email)
+        if return_pass:
+            return jsonify(message=f"Password Sent To {return_pass[0]['login_email']}")
+
+        else:
+            return jsonify(message="No Email Found Or Your Are Ban")
+
+
 @app.route('/logout')
 @login_required
 @try_except
@@ -60,4 +74,4 @@ def logout_view():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(port=5000, debug=True)
