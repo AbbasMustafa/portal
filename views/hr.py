@@ -14,8 +14,10 @@ hr = Blueprint("hr", __name__, static_folder='static', template_folder='template
 @authorize(my_roles=['Human Resource'])
 @try_except
 def home_view():
-   
-    return render_template('hr/index.html')
+    
+    activeUser = HrQueryGet.activeUser()
+    banUser = HrQueryGet.banUser()
+    return render_template('hr/index.html', activeUser= activeUser, banUser=banUser)
 
 
 @hr.route('/create-user', methods=['GET', 'POST'])

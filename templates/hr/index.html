@@ -88,7 +88,7 @@
 						<div class="col-lg-2 col-md-4">
 							<div class="card-body">
 								<div class="d-flex align-items-center">
-									<h5 class="mb-0">0</h5>
+									<h5 class="mb-0">{{ activeUser[0]['COUNT(login_email)'] }}</h5>
 									<div class="ms-auto">
                                         <i class='fa fa-check fs-5 text-white'></i>
 									</div>
@@ -101,7 +101,7 @@
 						<div class="col-lg-2 col-md-4 border-radius-right">
 							<div class="card-body">
 								<div class="d-flex align-items-center">
-									<h5 class="mb-0">0</h5>
+									<h5 class="mb-0">{{ banUser[0]['COUNT(login_email)'] }}</h5>
 									<div class="ms-auto">
                                         <i class='fa fa-ban fs-5 text-white'></i>
 									</div>
