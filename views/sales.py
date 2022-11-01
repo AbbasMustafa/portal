@@ -10,12 +10,18 @@ from utils.error_handler import *
 sale = Blueprint("sale", __name__, static_folder='static', template_folder='templates/sale')
 
 @sale.route('/')
-# @login_required
+@login_required
 @authorize(my_roles=['Sales'])
 @try_except
 def home_view():
-    SaleQueryGet.get()
-    SaleQueryPost.post()
-    SaleQueryUpdate.update()
-    SaleQueryDelete.delete()
+
     return render_template('sale/index.html')
+
+
+@sale.route('/create-order')
+@login_required
+@authorize(my_roles=['Sales'])
+@try_except
+def order_create_view():
+
+    return render_template('sale/add-new-order.html')

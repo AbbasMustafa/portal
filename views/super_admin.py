@@ -118,6 +118,19 @@ def user_status_view():
     return render_template('superAdmin/all-user.html', users = filter_users)
 
 
+
+@superAdmin.route('/create-order')
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
+def order_create_view():
+
+    return render_template('superAdmin/add-new-order.html')
+
+
+
+
+
 # @superAdmin.route('/add-department', methods=['GET', 'POST'])
 # @login_required
 # @authorize(my_roles=['Administration'])

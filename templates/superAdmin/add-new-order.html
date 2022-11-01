@@ -1,0 +1,299 @@
+{% extends './superAdmin/base.html' %}
+
+{% block body %}
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+	.note-icon-magic{
+		font-size:10px;
+	}
+	select option{
+		color:black;
+	}
+	.multiple-select{
+		unset:all;
+	}
+	.select2 {
+		width:100%;
+	}
+</style>
+		<!--end header -->
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+
+				<!--breadcrumb-->
+				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+					<div class="breadcrumb-title pe-3">eCommerce</div>
+					<div class="ps-3">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb mb-0 p-0">
+								<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+								</li>
+								<li class="breadcrumb-item active" aria-current="page">Add New Order</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				<!--end breadcrumb-->
+
+              <div class="card">
+				  <div class="card-body p-4">
+					  <h5 class="card-title">Add New Product</h5>
+					  <hr/>
+                       <div class="form-body mt-4">
+					    <div class="row">
+						<div class="col-lg-12">
+                           <div class="border border-3 p-4 rounded">
+							<form id="order-post" action="" method="POST">
+								<div class="row">
+									<div class="mb-3 col-6">
+										<label for="orderCode" class="form-label">Order Code</label>
+										<input name="orderCode" type="text" class="form-control" id="orderCode" value="ORDER#">
+									</div>
+									<div class="mb-3 col-6">
+										<label for="salesAgent" class="form-label">Sales Agent(s)</label><br>
+										<select class="multiple-select" name="state">
+											<option value="AL">Alabama</option>
+											<option value="WY">Wyoming</option>
+										  </select>
+									</div>
+
+									<div class="mb-3 col-12">
+										<label for="orderTitle" class="form-label">Order Title</label>
+										<input name="orderTitle" type="text" class="form-control" id="orderTitle" placeholder="Enter order title...">
+									</div>									
+									
+									<div class="mb-3 col-6">
+										<label for="oredrType" class="form-label">Order Type</label>
+										<select name="oredrType" id="oredrType" class="form-control">
+											<option value="1">Writers</option>
+											<option value="2">Developers</option>
+										</select>
+									</div>
+									<div class="mb-3 col-6">
+										<label for="assignedTo" class="form-label">Assigned To</label><br>
+										<select class="multiple-select" name="state">
+											<option value="AL">Alabama</option>
+											<option value="WY">Wyoming</option>
+										</select>
+									</div>
+									
+
+									<div class="mb-3 col-6">
+										<label for="service" class="form-label">Service / Technology</label>
+										<select name="service" id="service" class="form-control">
+											<option value="">SELECT SERVICE</option>
+										</select>
+									</div>
+									<div class="mb-3 col-6">
+										<label for="inputProductTitle" class="form-label">Product / Language</label>
+										<select name="product" id="service" class="form-control">
+											<option value="">SELECT PRODUCT</option>
+										</select>
+									</div>
+
+									<div class="mb-3 col-6">
+										<div class="row dateCount">
+											<div class="col ">
+												<label for="Hours" class="form-label">Hours</label>
+												<input type="number" class="form-control" id="Hours" value="0">
+											</div>
+											<div class="col">
+												<label for="Days" class="form-label">Days</label>
+												<input type="number" class="form-control" id="Days" value="0">
+											</div>
+											<div class="col">
+												<label for="Months" class="form-label">Months</label>
+												<input type="number" class="form-control" id="Months" value="0">
+											</div>
+										</div>
+									</div>
+									<div class="mb-3 col-6">
+										<label for="date" class="form-label">Deadline Date</label>
+										<input name="deadline" type="datetime-local" class="form-control" id="date">
+									</div>
+
+									<div class="mb-3 col-6">
+										<label for="cost" class="form-label">Cost</label>
+										<input name="cost" type="number" class="form-control" id="cost">
+									</div>
+									<div class="mb-3 col-6">
+										<label for="totalCost" class="form-label">Total Cost</label>
+										<input name="totalCost" type="number" class="form-control" id="totalCost">
+									</div>
+
+									<div class="writers row">
+										<div class="mb-3 col-6">
+											<label for="numberOfPage" class="form-label">Number of pages / words</label>
+											<input name="numberOfPage" type="number" class="form-control" id="numberOfPage">
+										</div>
+										<div class="mb-3 col-6">
+											<label for="AcedmicLevel" class="form-label">Acedmic Level</label>
+											<select name="AcedmicLevel" id="AcedmicLevel" class="form-control">
+												<option value="1">HIGH SCHOOL</option>
+												<option value="2">UNDERGRADUATE</option>
+												<option value="3">MASTER</option>
+												<option value="4">PH.D</option>
+											</select>
+										</div>
+										<div class="mb-3 col-12">
+											<label for="inputProductTitle" class="form-label">Subject Area</label>
+											<input type="number" class="form-control" id="inputProductTitle">
+										</div>
+
+										<div class="mb-3 col-6">
+											<label for="inputProductTitle" class="form-label">Style</label>
+											<select name="AcedmicLevel" id="AcedmicLevel" class="form-control">
+												<option value="1">APA</option>
+												<option value="2">CBE</option>
+												<option value="3">Chicago</option>
+												<option value="4">Harvard</option>
+												<option value="5">MLA</option>
+												<option value="6">Oxford</option>
+												<option value="7">Turabian</option>
+												<option value="8">Vancouvor</option>
+												<option value="9">OSCOLA</option>
+											</select>
+										</div>
+										<div class="mb-3 col-6">
+											<label for="numberOfSoruce" class="form-label">Number of source/Reference</label>
+											<input name="numberOfSoruce" type="number" class="form-control" id="numberOfSoruce">
+										</div>
+									</div>
+									<div class="mb-3 col-12">
+										<label for="inputProductDescription" class="form-label">Description</label>
+										<textarea id="summernote"></textarea>
+									</div>
+
+									<input id="description" name="description" type="hidden">
+
+									<div class="mb-3 col-6">
+										<label for="signed" class="form-label">Signed</label>
+										<input type="text" class="form-control" id="signed">	
+									</div>
+									<input class="btn btn-primary" type="submit" value="Create Order">
+								</div>
+								</form>
+                            </div>
+						</div>
+					   </div><!--end row-->
+					</div>
+				  </div>
+			  </div>
+
+			</div>
+		</div>
+
+		
+    <script>
+      $('textarea#summernote').summernote({
+        placeholder: 'Hello bootstrap 4',
+        tabsize: 2,
+        height: 100,
+  toolbar: [
+        ['style', ['style']],
+        ['font', ['bold', 'italic', 'underline', 'clear']],
+        // ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+        //['fontname', ['fontname']],
+       // ['fontsize', ['fontsize']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['height', ['height']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'hr']],
+        //['view', ['fullscreen', 'codeview']],
+        ['help', ['help']]
+      ],
+      });
+    </script>
+
+	<script>
+		document.querySelector('.note-editable').style.background = "rgba(0,0,0,0)"
+		document.querySelector('.note-editable').style.color = "white"
+
+		document.querySelector('.note-icon-magic').parentNode.style.display = "none";
+		document.querySelector('.note-icon-table').parentNode.style.display = "none";
+		
+		document.querySelector('.note-placeholder').textContent = "Enter Project Description Here.."
+		let btn = Array.from(document.querySelectorAll('.note-editor button'));
+
+		btn.forEach(item => {
+			item.style.margin = "3px";
+			item.style.marginBottom = "10px";
+		})
+
+
+
+		document.querySelector('#order-post').addEventListener('submit', (event)=>{
+			event.preventDefault();
+			document.querySelector('#description').value = document.querySelector('.note-editable').innerHTML;
+			event.currentTarget.submit();
+		})
+
+		const dateCount = Array.from(document.querySelectorAll('.dateCount input'))
+		console.log(dateCount);
+		dateCount.forEach(item => {
+			item.addEventListener('input', ()=>{
+				const hours = document.querySelector('#Hours').value;
+				const days = document.querySelector('#Days').value;
+				const month = document.querySelector('#Months').value;
+				
+				let oldDateObj = new Date();
+				let newDateObj = new Date();
+				let time1 = (60 * 60 * 1000)
+				time1 *= hours;
+
+				let time2 = (24 * 60 * 60 * 1000)
+				time2 *= days;
+
+				let time3 = (30 * 24 * 60 * 60 * 1000)
+				time3 *= month;
+
+				newDateObj.setTime(oldDateObj.getTime() + time1 + time2 + time3);
+
+				d = newDateObj.toString().split(" ")[2]
+				y = newDateObj.toString().split(" ")[3]
+				let [h, mi, s] = newDateObj.toString().split(" ")[4].split(":")
+				// console.log(newDateObj.getDay())
+				m = (newDateObj.getMonth()+1)
+				m = m < 10 ? `0${m}` : m;
+
+
+				console.log(`${y}-${m}-${d}T${h}:${mi}:${s}`)
+				document.querySelector('#date').value = `${y}-${m}-${d}T${h}:${mi}`;
+
+			})
+		})
+	</script>
+
+	<script>
+		$('.multiple-select').select2({
+			theme: 'bootstrap4',
+			width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+			placeholder: $(this).data('placeholder'),
+			allowClear: Boolean($(this).data('allow-clear')),
+		});
+	</script>
+
+	<script>
+		document.querySelectorAll('.select2').forEach(item => {
+			item.classList.add('form-control');
+		})
+
+
+	</script>
+
+	<style>
+		.select2-dropdown{
+			color:black !important;
+		}
+	</style>
+{% endblock %}

@@ -67,13 +67,13 @@
 						<div class="menu-title">Orders</div>
 					</a>
 					<ul>
-						<li> <a href="{{ url_for('superAdmin.order_create_view') }}"><i class="bx bx-right-arrow-alt"></i>Add New Orders</a>
+						<li> <a href="ecommerce-products.html"><i class="bx bx-right-arrow-alt"></i>Add New Orders</a>
 						</li>
-						<li> <a href="#"><i class="bx bx-right-arrow-alt"></i>All Orders</a>
+						<li> <a href="ecommerce-products-details.html"><i class="bx bx-right-arrow-alt"></i>All Orders</a>
 						</li>
-						<li> <a href="#"><i class="bx bx-right-arrow-alt"></i>Active Orders</a>
+						<li> <a href="ecommerce-add-new-products.html"><i class="bx bx-right-arrow-alt"></i>Active Orders</a>
 						</li>
-						<li> <a href="#"><i class="bx bx-right-arrow-alt"></i>Cancelled Orders</a>
+						<li> <a href="ecommerce-orders.html"><i class="bx bx-right-arrow-alt"></i>Cancelled Orders</a>
 						</li>
 					</ul>
 				</li>
@@ -84,7 +84,7 @@
 						<div class="menu-title">Wrokspace</div>
 					</a>
 				</li>
-				<li class="menu-label">Company</li>
+				<!-- <li class="menu-label">Company</li>
 				<li>
 					<a class="has-arrow" href="javascript:;">
 						<div class="parent-icon"><i class="bx bx-user"></i>
@@ -99,30 +99,23 @@
 							<a href="{{ url_for('superAdmin.list_user_view') }}"><i class="bx bx-right-arrow-alt"></i>All Users</a>
 						</li>
 						<li> 
-							<a href="{{ url_for('superAdmin.user_status_view', status='1')}}"><i class="bx bx-right-arrow-alt"></i>Active Users</a>
+							<a href="#"><i class="bx bx-right-arrow-alt"></i>Active Users</a>
 						</li>
 						<li> 
-							<a href="{{ url_for('superAdmin.user_status_view', status='0')}}"><i class="bx bx-right-arrow-alt"></i>Suspended Users</a>
+							<a href="#"><i class="bx bx-right-arrow-alt"></i>Suspended Users</a>
 						</li>
 					</ul>
-				</li>
+				</li> -->
 				<!-- <li>
-					<a onclick="newDept()" target="_blank">
+					<a href="https://themeforest.net/user/codervent" target="_blank">
 						<div class="parent-icon"><i class="bx bx-building"></i>
 						</div>
 						<div class="menu-title">Add New department</div>
 					</a>
-				</li>
-				<li>
-					<a onclick="newRole()" target="_blank">
-						<div class="parent-icon"><i class="bx bx-plus"></i>
-						</div>
-						<div class="menu-title">Add New Role</div>
-					</a>
 				</li> -->
 				<li class="menu-label">Personal</li>
 				<li>
-					<a href="{{ url_for('superAdmin.employee_info_view', id=session['emp_id']) }}">
+					<a href="https://themeforest.net/user/codervent" target="_blank">
 						<div class="parent-icon"><i class="bx bx-face"></i>
 						</div>
 						<div class="menu-title">User Profile</div>
@@ -279,7 +272,7 @@
 							</div>
 						</a>
 						<ul class="dropdown-menu dropdown-menu-end">
-							<li><a class="dropdown-item" href="{{ url_for('superAdmin.employee_info_view', id=session['emp_id']) }}"><i class="bx bx-user"></i><span>Profile</span></a>
+							<li><a class="dropdown-item" href="javascript:;"><i class="bx bx-user"></i><span>Profile</span></a>
 							</li>
 							<li><a class="dropdown-item" href="javascript:;"><i class="bx bx-cog"></i><span>Settings</span></a>
 							</li>
@@ -309,82 +302,6 @@
 			<p class="mb-0">Copyright © 2021. All right reserved.</p>
 		</footer>
 	</div>
-
-	<!-- <script>
-		function newDept(){
-			Swal.fire({
-			title: 'Enter New Department',
-			input: 'text',
-			inputAttributes: {
-				autocapitalize: 'off'
-			},
-			showCancelButton: true,
-			confirmButtonText: 'Add Department',
-			showLoaderOnConfirm: true,
-			preConfirm: (depart) => {
-				const url = "/admin/add-department";
-				return fetch(url, {
-					method: "POST",
-					headers: {
-						"Content-Type":"application/json"
-					},
-					body: JSON.stringify({depart})
-				})
-				.then(response => response.json())
-				.then(body => {
-					Swal.showValidationMessage(
-						`${body.message}`
-					)
-				})
-			},
-			allowOutsideClick: () => !Swal.isLoading()
-			}).then((result) => {
-			if (result.isConfirmed) {
-				Swal.fire({
-				title: `${result.value.login}'s avatar`,
-				imageUrl: result.value.avatar_url
-				})
-			}
-			})
-		}
-
-		function newRole(){
-			Swal.fire({
-			title: 'Please enter your email address',
-			input: 'text',
-			inputAttributes: {
-				autocapitalize: 'off'
-			},
-			showCancelButton: true,
-			confirmButtonText: 'Send Password',
-			showLoaderOnConfirm: true,
-			preConfirm: (email) => {
-				const url = "/forgot-password";
-				return fetch(url, {
-					method: "POST",
-					headers: {
-						"Content-Type":"application/json"
-					},
-					body: JSON.stringify({email})
-				})
-				.then(response => response.json())
-				.then(body => {
-					Swal.showValidationMessage(
-						`${body.message}`
-					)
-				})
-			},
-			allowOutsideClick: () => !Swal.isLoading()
-			}).then((result) => {
-			if (result.isConfirmed) {
-				Swal.fire({
-				title: `${result.value.login}'s avatar`,
-				imageUrl: result.value.avatar_url
-				})
-			}
-			})
-		}
-	</script> -->
 	<!--end wrapper-->
 	
 	<!-- Bootstrap JS -->
@@ -410,6 +327,7 @@
 	  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 	<!--app JS-->
 	<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+	
 	
 </body>
 
