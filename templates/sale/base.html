@@ -36,7 +36,7 @@
 		<!--sidebar wrapper -->
 		<div class="sidebar-wrapper" data-simplebar="true">
 			<div class="sidebar-header">
-				<div href="{{ url_for('superAdmin.home_view') }}" class="m-auto">
+				<div href="{{ url_for('sale.home_view') }}" class="m-auto">
 					<img width="100px;" src="{{ url_for('static', filename='images/company-logo.png') }}" class="" alt="logo icon">
 				</div>
 				
@@ -46,7 +46,7 @@
 			<!--navigation-->
 			<ul class="metismenu" id="menu">
 				<li>
-					<a href="{{ url_for('superAdmin.home_view') }}">
+					<a href="{{ url_for('sale.home_view') }}">
 						<div class="parent-icon"><i class='bx bx-home-circle'></i>
 						</div>
 						<div class="menu-title">Home</div>
@@ -78,7 +78,7 @@
 					</ul>
 				</li>
 				<li>
-					<a href="https://codervent.com/dashtreme/documentation/index.html" target="_blank">
+					<a href="#" target="_blank">
 						<div class="parent-icon"><i class="bx bx-folder"></i>
 						</div>
 						<div class="menu-title">Wrokspace</div>
@@ -115,7 +115,7 @@
 				</li> -->
 				<li class="menu-label">Personal</li>
 				<li>
-					<a href="https://themeforest.net/user/codervent" target="_blank">
+					<a href="{{url_for('sale.employee_info_view' , id=session['emp_id'])}}">
 						<div class="parent-icon"><i class="bx bx-face"></i>
 						</div>
 						<div class="menu-title">User Profile</div>
@@ -272,7 +272,7 @@
 							</div>
 						</a>
 						<ul class="dropdown-menu dropdown-menu-end">
-							<li><a class="dropdown-item" href="javascript:;"><i class="bx bx-user"></i><span>Profile</span></a>
+							<li><a class="dropdown-item" href="{{url_for('sale.employee_info_view' , id=session['emp_id'])}}"><i class="bx bx-user"></i><span>Profile</span></a>
 							</li>
 							<li><a class="dropdown-item" href="javascript:;"><i class="bx bx-cog"></i><span>Settings</span></a>
 							</li>
