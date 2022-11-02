@@ -86,6 +86,23 @@ class Admin:
         return_data = cursor.fetchall()
         return return_data
 
+    def get_sale_agent(self):
+        cursor = mysql.connection.cursor()        
+        my_query = f"""SELECT employee_id, employee_name, department_name FROM user_role INNER JOIN 
+        employee_detail ON user_role.role_id = employee_detail.employee_role_id
+        INNER JOIN department ON employee_detail.employee_department_id = department.department_id
+        WHERE role_name = 'Admin' OR role_name = 'Sales' """
+        cursor.execute(my_query)
+        return_data = cursor.fetchall()
+        return return_data
+    
+    def get_production(self):
+        cursor = mysql.connection.cursor()        
+        my_query = f"""SELECT manager_id , manager_name , manager_department FROM manager_table 
+        where manager_department like '%Production%' """
+        cursor.execute(my_query)
+        return_data = cursor.fetchall()
+        return return_data
 
 class Hr (Admin):
 
@@ -119,7 +136,7 @@ class Hr (Admin):
 
 
 
-class Sales:
+class Sales (Admin):
 
     def get(self):
         pass

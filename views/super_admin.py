@@ -124,8 +124,10 @@ def user_status_view():
 @authorize(my_roles=['Administration'])
 @try_except
 def order_create_view():
-
-    return render_template('superAdmin/add-new-order.html')
+    
+    saleAgent = AdminQueryGet.get_sale_agent()
+    productionPerson = AdminQueryGet.get_production()
+    return render_template('superAdmin/add-new-order.html', sale=saleAgent, production=productionPerson)
 
 
 

@@ -24,4 +24,6 @@ def home_view():
 @try_except
 def order_create_view():
 
-    return render_template('sale/add-new-order.html')
+    saleAgent = SaleQueryGet.get_sale_agent()
+    productionPerson = SaleQueryGet.get_production()
+    return render_template('sale/add-new-order.html', sale=saleAgent, production=productionPerson)
