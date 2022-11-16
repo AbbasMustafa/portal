@@ -6,7 +6,7 @@ from queries.updateQuery import AdminQueryUpdate
 from queries.postQuery import AdminQueryPost
 from utils.auth import authorize_with_param, login_required, authorize, login_required_with_param
 from utils.error_handler import *
-
+from utils.google_drive import *
 
 
 superAdmin = Blueprint("superAdmin", __name__, static_folder='static', template_folder='templates/superAdmin')
@@ -129,7 +129,6 @@ def user_status_view():
 def order_create_view():
 
     orderId = AdminQueryGet.getOrderId()
-        
     if not orderId:
         orderId = 1
     else:
@@ -138,27 +137,24 @@ def order_create_view():
     
     if request.method == 'POST':
         
+        fileName =[]
         uploaded_files = request.files.getlist("files[]")
-        
-        # directory = 'static/Files/'+str(orderId)
-        # if not os.path.exists(directory):
-        #     os.makedirs(directory)
+        if uploaded_files:
 
-        # for file in uploaded_files:
-        #     if file.filename:
-
-        #         filename = file.filename
-        #         extension = filename.split('.')[-1]
-        #         file.save(os.path.join(directory, filename))
-
-        #         insertHelper.insert_add_image_vehicle(post_id,filename, directory+'/'+filename)
+            directory = f'static/Files/ORDER# {orderId}'
+            if not os.path.exists(directory):
+                os.makedirs(directory)
             
-        #     else:
-        #         filename = "static/img/default.jpeg"
-        #         insertHelper.insert_add_image_vehicle(post_id,filename, filename)
+            for file in uploaded_files:
+                if file.filename:    
+                    fileName.append(file.filename)
+                    file.save(os.path.join(directory, file.filename))
+            
+    
+            fileUpload(fileName, orderId, directory)
 
 
-        resp = AdminQueryPost.create_orders(request.form, uploaded_files)
+        # resp = AdminQueryPost.create_orders(request.form)
         return redirect(url_for('superAdmin.order_create_view'))
 
     else:

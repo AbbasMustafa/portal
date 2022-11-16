@@ -7,12 +7,8 @@ from views.production import production
 from utils.error_handler import *
 from utils.auth import *
 from utils.redirectRouter import *
+from utils.google_drive import *
 from queries.globalQuery import *
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
-gauth = GoogleAuth()
-# gauth.LocalWebserverAuth()
-drive = GoogleDrive(gauth)
 
 
 # app = Flask(__name__)
@@ -69,6 +65,8 @@ def forgot_password_view():
             return jsonify(message="No Email Found Or Your Are Ban")
 
 
+
+
 @app.route('/logout')
 @login_required
 @try_except
@@ -77,28 +75,19 @@ def logout_view():
     return redirect(url_for('login_view'))
 
 
-@app.route('/upload', methods=['GET','POST'])
-def upload_f():
-    if request.method == 'POST':
-        uploaded_files = request.files.getlist("file[]")
-        
-        # for file in uploaded_files:
-            
-        #     file1 = drive.CreateFile({'parents': [{'id': '1-dVaZru63wJ4KaF9NlUmJqW1OCNKWYNn'}], 'title': file.filename})
-        #     file1.Upload()
-            
-        return redirect(url_for('upload_f'))
-    # file1.SetContentString('hi1s')
-    # file_list1 = drive.ListFile({'q': "'root' in parents and trashed=false"}).GetList()
-    # for file1 in file_list:
-        # if file1['title'] == 'sample1.txt':
-            # print('title: %s, id: %s' % (file1['title'], file1['id']))
-            # print(file1['embedLink'])
-        # print(file1)
-    # print(file_list[0:]['title'])    
-    else:
-        file_list = drive.ListFile({'q': "'sample.txt' in '1-dVaZru63wJ4KaF9NlUmJqW1OCNKWYNn' and '1-dVaZru63wJ4KaF9NlUmJqW1OCNKWYNn' in parents and trashed=false"}).GetList()
-        return render_template('test.html')
+
+# ======================================================================================
+# @app.route('/google-setups', methods=['GET','POST'])
+# def googleDrive():
+#     mymain()
+#     return "Done"
+
+# @app.route('/google-setup', methods=['GET','POST'])
+# def googleDrive1():    
+#     return "Done"
+
+# ======================================================================================
+
 
 
 if __name__ == '__main__':
