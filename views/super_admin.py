@@ -1,10 +1,13 @@
 from flask import Blueprint, jsonify, redirect, url_for, render_template, request, json
+import requests
 from queries.getQuery import AdminQueryGet
 from queries.deleteQuery import AdminQueryDelete
 from queries.updateQuery import AdminQueryUpdate
 from queries.postQuery import AdminQueryPost
 from utils.auth import authorize_with_param, login_required, authorize, login_required_with_param
 from utils.error_handler import *
+
+
 
 superAdmin = Blueprint("superAdmin", __name__, static_folder='static', template_folder='templates/superAdmin')
 
@@ -119,16 +122,53 @@ def user_status_view():
 
 
 
-@superAdmin.route('/create-order')
+@superAdmin.route('/create-order', methods=['GET', 'POST'])
 @login_required
 @authorize(my_roles=['Administration'])
 @try_except
 def order_create_view():
-    
-    saleAgent = AdminQueryGet.get_sale_agent()
-    productionPerson = AdminQueryGet.get_production()
-    return render_template('superAdmin/add-new-order.html', sale=saleAgent, production=productionPerson)
 
+    orderId = AdminQueryGet.getOrderId()
+        
+    if not orderId:
+        orderId = 1
+    else:
+        orderId = orderId[0]['order_id'] + 1
+    
+    
+    if request.method == 'POST':
+        
+        uploaded_files = request.files.getlist("files[]")
+        
+        # directory = 'static/Files/'+str(orderId)
+        # if not os.path.exists(directory):
+        #     os.makedirs(directory)
+
+        # for file in uploaded_files:
+        #     if file.filename:
+
+        #         filename = file.filename
+        #         extension = filename.split('.')[-1]
+        #         file.save(os.path.join(directory, filename))
+
+        #         insertHelper.insert_add_image_vehicle(post_id,filename, directory+'/'+filename)
+            
+        #     else:
+        #         filename = "static/img/default.jpeg"
+        #         insertHelper.insert_add_image_vehicle(post_id,filename, filename)
+
+
+        resp = AdminQueryPost.create_orders(request.form, uploaded_files)
+        return redirect(url_for('superAdmin.order_create_view'))
+
+    else:
+
+        saleAgent = AdminQueryGet.get_sale_agent()
+        productionPerson = AdminQueryGet.get_production()
+        service = AdminQueryGet.get_service()
+        product = AdminQueryGet.get_product()
+
+        return render_template('superAdmin/add-new-order.html', sale=saleAgent, production=productionPerson, service=service, product=product, orderId=orderId)
 
 
 

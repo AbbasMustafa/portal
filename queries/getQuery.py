@@ -104,6 +104,41 @@ class Admin:
         return_data = cursor.fetchall()
         return return_data
 
+    def activeUser(self):
+        cursor = mysql.connection.cursor()
+        my_query = """SELECT COUNT(login_email) FROM login_credential WHERE active = 1 """
+        cursor.execute(my_query)
+        return_data = cursor.fetchall()
+        return return_data
+
+    def banUser(self):
+        cursor = mysql.connection.cursor()
+        my_query = """SELECT COUNT(login_email) FROM login_credential WHERE active = 0 """
+        cursor.execute(my_query)
+        return_data = cursor.fetchall()
+        return return_data
+
+    def get_service(self):
+        cursor = mysql.connection.cursor()
+        my_query = """SELECT * FROM service_table """
+        cursor.execute(my_query)
+        return_data = cursor.fetchall()
+        return return_data
+
+    def get_product(self):
+        cursor = mysql.connection.cursor()
+        my_query = """SELECT * FROM product_table """
+        cursor.execute(my_query)
+        return_data = cursor.fetchall()
+        return return_data
+
+    def getOrderId(self):
+        cursor = mysql.connection.cursor()
+        my_query = """SELECT order_id FROM order_detail ORDER BY order_id DESC LIMIT 1 """
+        cursor.execute(my_query)
+        return_data = cursor.fetchall()
+        return return_data
+
 class Hr (Admin):
 
     def get_Role(self):
@@ -120,19 +155,19 @@ class Hr (Admin):
         return_data = cursor.fetchall()
         return return_data
 
-    def activeUser(self):
-        cursor = mysql.connection.cursor()
-        my_query = """SELECT COUNT(login_email) FROM login_credential WHERE active = 1 """
-        cursor.execute(my_query)
-        return_data = cursor.fetchall()
-        return return_data
+    # def activeUser(self):
+    #     cursor = mysql.connection.cursor()
+    #     my_query = """SELECT COUNT(login_email) FROM login_credential WHERE active = 1 """
+    #     cursor.execute(my_query)
+    #     return_data = cursor.fetchall()
+    #     return return_data
 
-    def banUser(self):
-        cursor = mysql.connection.cursor()
-        my_query = """SELECT COUNT(login_email) FROM login_credential WHERE active = 0 """
-        cursor.execute(my_query)
-        return_data = cursor.fetchall()
-        return return_data
+    # def banUser(self):
+    #     cursor = mysql.connection.cursor()
+    #     my_query = """SELECT COUNT(login_email) FROM login_credential WHERE active = 0 """
+    #     cursor.execute(my_query)
+    #     return_data = cursor.fetchall()
+    #     return return_data
 
 
 

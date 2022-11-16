@@ -70,9 +70,51 @@ class Admin:
     #     mysql.connection.commit()
     #     return "Department Added"
 
+    def create_orders(self, formData):
+        self.orderCode = formData['orderCode']
+        self.saleAgent = formData['saleAgent']
+        self.orderTitle = formData['orderTitle']
+        self.oredrType = formData['oredrType']
+        self.assignedTo = formData['assignedTo']
+        self.service = formData['service']
+        self.product = formData['product']
+        self.deadline = formData['deadline']
+        # self.cost = formData['cost']
+        self.totalCost = formData['totalCost']
+        self.numberOfPage = formData['numberOfPage']
+        self.AcedmicLevel = formData['AcedmicLevel']
+        self.style = formData['style']
+        self.numberOfSoruce = formData['numberOfSoruce']
+        self.description = formData['description']
+        self.signed = formData['signed']
+        # self.files = formData['files[]']
+        self.subjectArea = formData['subjectArea']
+
+        cursor = mysql.connection.cursor()
+
+        my_query = """INSERT INTO (order_title, order_date, sale_agent_id, order_service, order_product, 
+        order_deadline, order_pageNo, order_subjectArea, order_style, order_sourceNo, order_description, 
+        order_signature, order_code, order_acadmicLevel, order_assignedTo, order_type)
+        VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        data = (self.orderTitle, date.today(), self.saleAgent, self.service, self.product, self.deadline,
+        self.numberOfPage, self.subjectArea, self.style, self.numberOfSoruce, self.description,
+        self.signed, self.orderCode, self.AcedmicLevel, self.assignedTo, self.oredrType,)
+        # cursor.execute(my_query, data)
+        # mysql.connection.commit()
+
+        my_query = f"""SELECT order_id FROM order_detail WHERE order_code = {self.orderCode} """
+        # cursor.execute(my_query)
+        # orderId = cursor.fetchall()
+
+        my_query = """INSERT INTO order_price (Price_order, order_id) VALUES(%s,%s)"""
+        # data = (self.totalCost, orderId[0]['order_id'],)
+        # cursor.execute(my_query, data)
+        # mysql.connection.commit()
+
 
         
 
+        
 class Hr:
     
     def create_users(self, formData):
@@ -118,7 +160,7 @@ class Hr:
 
 
 
-class Sales:
+class Sales (Admin):
 
     def post(self):
         pass
