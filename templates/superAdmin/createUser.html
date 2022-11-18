@@ -223,4 +223,29 @@
 				}
 			})
 		</script>
+
+<script>
+	function success(){
+	Swal.fire({
+  icon: 'success',
+  title: 'User Added'
+	})}
+
+	function error(){
+	Swal.fire({
+  icon: 'error',
+  title: 'Something Went Wrong'
+	})}
+</script>
+
+{% if message =='success' %}
+<script>
+	success()
+</script>
+{% elif message =='error' %}
+<script>
+	error()
+</script>
+{% endif %}
+
 {% endblock %}

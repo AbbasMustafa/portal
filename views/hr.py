@@ -27,18 +27,23 @@ def home_view():
 def create_user_view():
     if request.method == 'POST':
         if len(request.form) == 17:
-            HrQueryPost.create_users(request.form)
+            message = HrQueryPost.create_users(request.form)
         else: 
             return render_template('hr/createUser.html', department=resp_department, manager=resp_manager, 
             role=resp_Role, error_msg = 'fill all field')   
         
-        return redirect(url_for('hr.create_user_view'))
+        return redirect(url_for('hr.create_user_view', message=message))
     
     else:
+        if request.args.get('message'):
+            message =message
+        else:
+            message = ""
+        
         resp_department = HrQueryGet.get_Department()
         resp_manager = HrQueryGet.get_Manager()
         resp_Role = HrQueryGet.get_Role()
-    return render_template('hr/createUser.html', department=resp_department, manager=resp_manager, role=resp_Role)
+    return render_template('hr/createUser.html', department=resp_department, manager=resp_manager, role=resp_Role, message=message)
 
 
 

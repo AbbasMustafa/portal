@@ -28,18 +28,24 @@ def home_view():
 def create_user_view():
     if request.method == 'POST':
         if len(request.form) == 17 or len(request.form) == 18:
-            AdminQueryPost.create_users(request.form)
+            message = AdminQueryPost.create_users(request.form)
         else: 
             return render_template('superAdmin/createUser.html', department=resp_department, manager=resp_manager, 
             role=resp_Role, error_msg = 'fill all field')   
         
-        return redirect(url_for('superAdmin.create_user_view'))
+        return redirect(url_for('superAdmin.create_user_view', message = message))
     
     else:
+
+        if request.args.get('message'):
+            message = request.args.get('message')
+        else:
+            message = ""
+
         resp_department = AdminQueryGet.get_Department()
         resp_manager = AdminQueryGet.get_Manager()
         resp_Role = AdminQueryGet.get_Role()
-    return render_template('superAdmin/createUser.html', department=resp_department, manager=resp_manager, role=resp_Role)
+    return render_template('superAdmin/createUser.html', department=resp_department, manager=resp_manager, role=resp_Role, message=message)
 
 
 
@@ -138,6 +144,9 @@ def order_create_view():
     if request.method == 'POST':
         
         fileName =[]
+        doctype = []
+        saveDir = []
+
         uploaded_files = request.files.getlist("files[]")
         if uploaded_files:
 
@@ -149,24 +158,52 @@ def order_create_view():
                 if file.filename:    
                     fileName.append(file.filename)
                     file.save(os.path.join(directory, file.filename))
+                    doctype.append(file.filename.split('.')[-1])
+                    saveDir.append(f'{directory}/{file.filename}')
+            
             
     
-            fileUpload(fileName, orderId, directory)
+            resp = AdminQueryPost.create_orders(request.form, saveDir, doctype, directory, fileName)
+            
+            # fileUpload(fileName, orderId, directory)
 
 
-        # resp = AdminQueryPost.create_orders(request.form)
-        return redirect(url_for('superAdmin.order_create_view'))
+        return redirect(url_for('superAdmin.order_create_view', message = resp))
 
     else:
+        if request.args.get('message'):
+            message = request.args.get('message')
+        else:
+            message = ""
 
         saleAgent = AdminQueryGet.get_sale_agent()
         productionPerson = AdminQueryGet.get_production()
         service = AdminQueryGet.get_service()
         product = AdminQueryGet.get_product()
 
-        return render_template('superAdmin/add-new-order.html', sale=saleAgent, production=productionPerson, service=service, product=product, orderId=orderId)
+        return render_template('superAdmin/add-new-order.html', sale=saleAgent, production=productionPerson, service=service, product=product, orderId=orderId, message=message)
 
 
+@superAdmin.route('/all-order', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
+def get_all_order():
+    data = AdminQueryGet.get_order()
+    docs = get_docs()
+    print(docs)
+    return jsonify(data = data)
+
+
+
+
+# @superAdmin.route('/json-test', methods=['GET', 'POST'])
+# def json_test():
+    # resp = AdminQueryGet.test_data()
+    # res = requests.get(f"https://www.googleapis.com/drive/v2/files?q='1mWLRE14TeJXtJWUyYcBo27aMi84fjCM7'+in+parents&key=AIzaSyBnRf27nUBXxCXlT0fku7r56KlZ3nkf4WE")
+    # print("res ========= ",res )
+    
+    # return str(res)
 
 
 # @superAdmin.route('/add-department', methods=['GET', 'POST'])

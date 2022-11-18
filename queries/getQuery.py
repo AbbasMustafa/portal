@@ -98,8 +98,11 @@ class Admin:
     
     def get_production(self):
         cursor = mysql.connection.cursor()        
-        my_query = f"""SELECT manager_id , manager_name , manager_department FROM manager_table 
-        where manager_department like '%Production%' """
+        my_query = f"""SELECT employee_id, employee_name, department_name, role_name FROM employee_detail INNER JOIN 
+        manager_table ON employee_detail.employee_id = manager_table.manager_emp_id  INNER JOIN department ON 
+        employee_detail.employee_department_id = department.department_id INNER JOIN user_role ON 
+        user_role.role_id = employee_detail.employee_role_id
+        WHERE department_name = 'Production' """
         cursor.execute(my_query)
         return_data = cursor.fetchall()
         return return_data
@@ -138,6 +141,35 @@ class Admin:
         cursor.execute(my_query)
         return_data = cursor.fetchall()
         return return_data
+
+    def test_data(self):
+        cursor = mysql.connection.cursor()
+        my_query = """SELECT order_id_fk , order_title, order_date, order_status, order_complete, order_deadline, order_pageNo,
+        order_subjectArea, order_style, order_sourceNo, order_description, order_signature, order_detail.order_code, 
+        order_acadmicLevel, service_name, product_name, order_metadata, order_service_dev, order_product_dev,
+        group_concat(employee_name) employee_name, group_concat(order_assign_status) order_assign_status,
+        group_concat(order_emp_status) order_emp_status
+        FROM order_detail INNER JOIN order_employee_association ON order_detail.order_id = order_employee_association.order_id_fk
+        INNER JOIN employee_detail ON employee_detail.employee_id = order_employee_association.employee_id_fk
+        LEFT JOIN service_table ON order_detail.order_service = service_table.service_id LEFT JOIN product_table ON
+        order_detail.order_product = product_table.product_id
+        WHERE order_id = 20; """
+        cursor.execute(my_query)
+        return_data = cursor.fetchall()
+        return return_data
+
+    def get_order(self):
+        cursor = mysql.connection.cursor()
+        my_query = """SELECT order_id , order_detail.order_code, order_status, order_title, order_deadline, group_concat(employee_name) employee_name, 
+        group_concat(order_assign_status) order_assign, Price_order, currency
+        FROM order_detail INNER JOIN order_employee_association ON order_detail.order_id = order_employee_association.order_id_fk 
+        INNER JOIN employee_detail ON employee_detail.employee_id = order_employee_association.employee_id_fk INNER JOIN
+        order_price ON order_detail.order_id = order_price.order_id_fk
+        GROUP BY order_id """
+        cursor.execute(my_query)
+        return_data = cursor.fetchall()
+        return return_data
+
 
 class Hr (Admin):
 

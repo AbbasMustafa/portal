@@ -26,6 +26,16 @@
 	.select2 {
 		width: 100%;
 	}
+	.hide {
+		display: none;
+	}
+	.add-field{
+		padding:10px;
+		background:green;
+		border-radius:100%;
+		cursor: pointer;
+		box-shadow: 2px 2px 2px black;
+	}
 </style>
 <!--end header -->
 <!--start page wrapper -->
@@ -68,8 +78,7 @@
 											<select name="saleAgent" class="multiple-select saleAgents" data-placeholder="Sales Agent"
 												multiple="multiple">
 												{% for sale in sale %}
-												<option value="{{sale.employee_id}}">{{sale.employee_name}} -
-													({{sale.department_name}})</option>
+												<option value="{{sale.employee_id}}">{{sale.employee_name}} - ({{sale.department_name}})</option>
 												{% endfor%}
 											</select>
 											<!-- salesAgentsInput -->
@@ -79,7 +88,7 @@
 										<div class="mb-3 col-12">
 											<label for="orderTitle" class="form-label">Order Title</label>
 											<!-- orderTitle -->
-											<input name="orderTitle" type="text" class="form-control" id="orderTitle"
+											<input value="" name="orderTitle" type="text" class="form-control" id="orderTitle"
 												placeholder="Enter order title...">
 										</div>
 
@@ -87,8 +96,8 @@
 											<label for="oredrType" class="form-label">Order Type</label>
 											<!-- orderType -->
 											<select name="oredrType" id="oredrType" class="form-control">
-												<option value="4">Developers</option>
 												<option value="5">Writers</option>
+												<option value="4">Developers</option>
 											</select>
 										</div>
 										<div class="mb-3 col-6">
@@ -96,8 +105,7 @@
 											<select name="assignedTo" class="multiple-select assignedTo"
 												data-placeholder="Assigned To" multiple="multiple">
 												{% for manager in production %}
-												<option value="{{ manager.manager_id }}">{{manager.manager_name}} -
-													({{manager.manager_department.split('-')[-1]}} )</option>
+												<option value="{{ manager.employee_id }}">{{manager.employee_name}} - ( {{manager.role_name}} )</option>
 												{% endfor %}
 											</select>
 											<!-- assignedToInput -->
@@ -106,56 +114,213 @@
 
 
 										<div class="mb-3 col-6">
-											<label for="service" class="form-label">Service / Technology</label>
+											<label for="service" class="form-label">Service</label>
 											<!-- service -->
-											<select onchange="productSelect(this.value)" name="service" id="service" class="form-control">
+											<select onchange="productSelect(this.value)" name="service" id="service" class="form-control service">
+												<option value="">SELECT SERVICE</option>
 												{% for services in service %}
 												<option value="{{services['service_id']}}">{{services['service_name']}}</option>
 												{% endfor %}
 											</select>
+
+											<input type="text" value="" name="serviceDev" class="form-control technology hide">
 										</div>
+
 										<div class="mb-3 col-6">
-											<label for="inputProductTitle" class="form-label">Product / Language</label>
+											<label for="inputProductTitle" class="form-label">Product</label>
 											<!-- product -->
-											<select name="product" id="product" class="form-control">
+											<select name="product" id="product" class="form-control product">
 													<option value="">SELECT PRODUCT</option>
 												{% for product in product %}
 													<option id="p{{product['service_id_fk']}}" value="{{product['product_id']}}" >{{product['product_name']}}</option>
 												{% endfor %}
 											</select>
+
+											<input type="text" value="" name="productDev" class="form-control language hide">
 										</div>
 
-										<div class="mb-3 col-6">
-											<div class="row dateCount">
-												<div class="col ">
-													<label for="Hours" class="form-label">Hours</label>
-													<input type="number" class="form-control" id="Hours" value="0">
-												</div>
-												<div class="col">
-													<label for="Days" class="form-label">Days</label>
-													<input type="number" class="form-control" id="Days" value="0">
-												</div>
-												<div class="col">
-													<label for="Months" class="form-label">Months</label>
-													<input type="number" class="form-control" id="Months" value="0">
-												</div>
-											</div>
-										</div>
 										<div class="mb-3 col-6">
 											<label for="date" class="form-label">Deadline Date</label>
 											<!-- deadline -->
-											<input name="deadline" type="datetime-local" class="form-control" id="date">
+											<input value="" name="deadline" type="datetime-local" class="form-control" id="date">
 										</div>
 
-										<div class="mb-3 col-6">
-											<label for="cost" class="form-label">Cost</label>
-											<!-- cost -->
-											<input name="cost" type="number" class="form-control" id="cost">
+										<div class="mb-3 col-3">
+											<label for="currency" class="form-label">Currency</label>
+											<!-- Currency -->
+											<select class="form-control" id="currency" name="currency">
+												<option>select currency</option>
+												<option value="AFN">Afghan Afghani</option>
+												<option value="ALL">Albanian Lek</option>
+												<option value="DZD">Algerian Dinar</option>
+												<option value="AOA">Angolan Kwanza</option>
+												<option value="ARS">Argentine Peso</option>
+												<option value="AMD">Armenian Dram</option>
+												<option value="AWG">Aruban Florin</option>
+												<option value="AUD">Australian Dollar</option>
+												<option value="AZN">Azerbaijani Manat</option>
+												<option value="BSD">Bahamian Dollar</option>
+												<option value="BHD">Bahraini Dinar</option>
+												<option value="BDT">Bangladeshi Taka</option>
+												<option value="BBD">Barbadian Dollar</option>
+												<option value="BYR">Belarusian Ruble</option>
+												<option value="BEF">Belgian Franc</option>
+												<option value="BZD">Belize Dollar</option>
+												<option value="BMD">Bermudan Dollar</option>
+												<option value="BTN">Bhutanese Ngultrum</option>
+												<option value="BTC">Bitcoin</option>
+												<option value="BOB">Bolivian Boliviano</option>
+												<option value="BAM">Bosnia-Herzegovina Convertible Mark</option>
+												<option value="BWP">Botswanan Pula</option>
+												<option value="BRL">Brazilian Real</option>
+												<option value="GBP">British Pound Sterling</option>
+												<option value="BND">Brunei Dollar</option>
+												<option value="BGN">Bulgarian Lev</option>
+												<option value="BIF">Burundian Franc</option>
+												<option value="KHR">Cambodian Riel</option>
+												<option value="CAD">Canadian Dollar</option>
+												<option value="CVE">Cape Verdean Escudo</option>
+												<option value="KYD">Cayman Islands Dollar</option>
+												<option value="XOF">CFA Franc BCEAO</option>
+												<option value="XAF">CFA Franc BEAC</option>
+												<option value="XPF">CFP Franc</option>
+												<option value="CLP">Chilean Peso</option>
+												<option value="CNY">Chinese Yuan</option>
+												<option value="COP">Colombian Peso</option>
+												<option value="KMF">Comorian Franc</option>
+												<option value="CDF">Congolese Franc</option>
+												<option value="CRC">Costa Rican ColÃ³n</option>
+												<option value="HRK">Croatian Kuna</option>
+												<option value="CUC">Cuban Convertible Peso</option>
+												<option value="CZK">Czech Republic Koruna</option>
+												<option value="DKK">Danish Krone</option>
+												<option value="DJF">Djiboutian Franc</option>
+												<option value="DOP">Dominican Peso</option>
+												<option value="XCD">East Caribbean Dollar</option>
+												<option value="EGP">Egyptian Pound</option>
+												<option value="ERN">Eritrean Nakfa</option>
+												<option value="EEK">Estonian Kroon</option>
+												<option value="ETB">Ethiopian Birr</option>
+												<option value="EUR">Euro</option>
+												<option value="FKP">Falkland Islands Pound</option>
+												<option value="FJD">Fijian Dollar</option>
+												<option value="GMD">Gambian Dalasi</option>
+												<option value="GEL">Georgian Lari</option>
+												<option value="DEM">German Mark</option>
+												<option value="GHS">Ghanaian Cedi</option>
+												<option value="GIP">Gibraltar Pound</option>
+												<option value="GRD">Greek Drachma</option>
+												<option value="GTQ">Guatemalan Quetzal</option>
+												<option value="GNF">Guinean Franc</option>
+												<option value="GYD">Guyanaese Dollar</option>
+												<option value="HTG">Haitian Gourde</option>
+												<option value="HNL">Honduran Lempira</option>
+												<option value="HKD">Hong Kong Dollar</option>
+												<option value="HUF">Hungarian Forint</option>
+												<option value="ISK">Icelandic KrÃ³na</option>
+												<option value="INR">Indian Rupee</option>
+												<option value="IDR">Indonesian Rupiah</option>
+												<option value="IRR">Iranian Rial</option>
+												<option value="IQD">Iraqi Dinar</option>
+												<option value="ILS">Israeli New Sheqel</option>
+												<option value="ITL">Italian Lira</option>
+												<option value="JMD">Jamaican Dollar</option>
+												<option value="JPY">Japanese Yen</option>
+												<option value="JOD">Jordanian Dinar</option>
+												<option value="KZT">Kazakhstani Tenge</option>
+												<option value="KES">Kenyan Shilling</option>
+												<option value="KWD">Kuwaiti Dinar</option>
+												<option value="KGS">Kyrgystani Som</option>
+												<option value="LAK">Laotian Kip</option>
+												<option value="LVL">Latvian Lats</option>
+												<option value="LBP">Lebanese Pound</option>
+												<option value="LSL">Lesotho Loti</option>
+												<option value="LRD">Liberian Dollar</option>
+												<option value="LYD">Libyan Dinar</option>
+												<option value="LTL">Lithuanian Litas</option>
+												<option value="MOP">Macanese Pataca</option>
+												<option value="MKD">Macedonian Denar</option>
+												<option value="MGA">Malagasy Ariary</option>
+												<option value="MWK">Malawian Kwacha</option>
+												<option value="MYR">Malaysian Ringgit</option>
+												<option value="MVR">Maldivian Rufiyaa</option>
+												<option value="MRO">Mauritanian Ouguiya</option>
+												<option value="MUR">Mauritian Rupee</option>
+												<option value="MXN">Mexican Peso</option>
+												<option value="MDL">Moldovan Leu</option>
+												<option value="MNT">Mongolian Tugrik</option>
+												<option value="MAD">Moroccan Dirham</option>
+												<option value="MZM">Mozambican Metical</option>
+												<option value="MMK">Myanmar Kyat</option>
+												<option value="NAD">Namibian Dollar</option>
+												<option value="NPR">Nepalese Rupee</option>
+												<option value="ANG">Netherlands Antillean Guilder</option>
+												<option value="TWD">New Taiwan Dollar</option>
+												<option value="NZD">New Zealand Dollar</option>
+												<option value="NIO">Nicaraguan CÃ³rdoba</option>
+												<option value="NGN">Nigerian Naira</option>
+												<option value="KPW">North Korean Won</option>
+												<option value="NOK">Norwegian Krone</option>
+												<option value="OMR">Omani Rial</option>
+												<option value="PKR">Pakistani Rupee</option>
+												<option value="PAB">Panamanian Balboa</option>
+												<option value="PGK">Papua New Guinean Kina</option>
+												<option value="PYG">Paraguayan Guarani</option>
+												<option value="PEN">Peruvian Nuevo Sol</option>
+												<option value="PHP">Philippine Peso</option>
+												<option value="PLN">Polish Zloty</option>
+												<option value="QAR">Qatari Rial</option>
+												<option value="RON">Romanian Leu</option>
+												<option value="RUB">Russian Ruble</option>
+												<option value="RWF">Rwandan Franc</option>
+												<option value="SVC">Salvadoran ColÃ³n</option>
+												<option value="WST">Samoan Tala</option>
+												<option value="SAR">Saudi Riyal</option>
+												<option value="RSD">Serbian Dinar</option>
+												<option value="SCR">Seychellois Rupee</option>
+												<option value="SLL">Sierra Leonean Leone</option>
+												<option value="SGD">Singapore Dollar</option>
+												<option value="SKK">Slovak Koruna</option>
+												<option value="SBD">Solomon Islands Dollar</option>
+												<option value="SOS">Somali Shilling</option>
+												<option value="ZAR">South African Rand</option>
+												<option value="KRW">South Korean Won</option>
+												<option value="XDR">Special Drawing Rights</option>
+												<option value="LKR">Sri Lankan Rupee</option>
+												<option value="SHP">St. Helena Pound</option>
+												<option value="SDG">Sudanese Pound</option>
+												<option value="SRD">Surinamese Dollar</option>
+												<option value="SZL">Swazi Lilangeni</option>
+												<option value="SEK">Swedish Krona</option>
+												<option value="CHF">Swiss Franc</option>
+												<option value="SYP">Syrian Pound</option>
+												<option value="STD">São Tomé and Príncipe Dobra</option>
+												<option value="TJS">Tajikistani Somoni</option>
+												<option value="TZS">Tanzanian Shilling</option>
+												<option value="THB">Thai Baht</option>
+												<option value="TOP">Tongan pa'anga</option>
+												<option value="TTD">Trinidad & Tobago Dollar</option>
+												<option value="TND">Tunisian Dinar</option>
+												<option value="TRY">Turkish Lira</option>
+												<option value="TMT">Turkmenistani Manat</option>
+												<option value="UGX">Ugandan Shilling</option>
+												<option value="UAH">Ukrainian Hryvnia</option>
+												<option value="AED">United Arab Emirates Dirham</option>
+												<option value="UYU">Uruguayan Peso</option>
+												<option value="USD">US Dollar</option>
+												<option value="UZS">Uzbekistan Som</option>
+												<option value="VUV">Vanuatu Vatu</option>
+												<option value="VEF">Venezuelan BolÃ­var</option>
+												<option value="VND">Vietnamese Dong</option>
+												<option value="YER">Yemeni Rial</option>
+												<option value="ZMK">Zambian Kwacha</option>
+											</select>
 										</div>
-										<div class="mb-3 col-6">
+
+										<div class="mb-3 col-3">
 											<label for="totalCost" class="form-label">Total Cost</label>
 											<!-- totalCost -->
-											<input name="totalCost" type="number" class="form-control" id="totalCost">
+											<input value="" name="totalCost" type="number" class="form-control" id="totalCost">
 										</div>
 
 										<div class="writers row">
@@ -163,18 +328,21 @@
 												<label for="numberOfPage" class="form-label">Number of pages /
 													words</label>
 												<!-- numberOfPage -->
-												<input name="numberOfPage" type="number" class="form-control"
+												<input name="numberOfPage" type="number" class="form-control" value="0"
 													id="numberOfPage">
 											</div>
+
+											
+
 											<div class="mb-3 col-6">
 												<label for="AcedmicLevel" class="form-label">Acedmic Level</label>
 												<!-- AcedmicLevel -->
 												<select name="AcedmicLevel" id="AcedmicLevel" class="form-control">
 													<option value="">SELECT ACADMIC LEVEL</option>
-													<option value="1">HIGH SCHOOL</option>
-													<option value="2">UNDERGRADUATE</option>
-													<option value="3">MASTER</option>
-													<option value="4">PH.D</option>
+													<option value="HIGH SCHOOL">HIGH SCHOOL</option>
+													<option value="UNDERGRADUATE">UNDERGRADUATE</option>
+													<option value="MASTER">MASTER</option>
+													<option value="PH.D">PH.D</option>
 												</select>
 											</div>
 											<div class="mb-3 col-12">
@@ -270,7 +438,7 @@
 													<option value="Astronomy">Astronomy</option>
 													<option value="Pedagogy">Pedagogy</option>
 													<option value="Education Theories">Education Theories</option>
-													2<option value="Child">Child</option>
+													<option value="Child">Child</option>
 													<option value="Youth Issues">Youth Issues</option>
 													<option value="Application Essay">Application Essay</option>
 													<option value="Nutrition">Nutrition</option>
@@ -304,25 +472,53 @@
 												<label for="style" class="form-label">Style</label>
 												<!-- style -->
 												<select name="style" id="style" class="form-control">
-													<option value="1">APA</option>
-													<option value="2">CBE</option>
-													<option value="3">Chicago</option>
-													<option value="4">Harvard</option>
-													<option value="5">MLA</option>
-													<option value="6">Oxford</option>
-													<option value="7">Turabian</option>
-													<option value="8">Vancouvor</option>
-													<option value="9">OSCOLA</option>
+													<option value="APA">APA</option>
+													<option value="CBE">CBE</option>
+													<option value="Chicago">Chicago</option>
+													<option value="Harvard">Harvard</option>
+													<option value="MLA">MLA</option>
+													<option value="Oxford">Oxford</option>
+													<option value="Turabian">Turabian</option>
+													<option value="Vancouvor">Vancouvor</option>
+													<option value="OSCOLA">OSCOLA</option>
 												</select>
 											</div>
 											<div class="mb-3 col-6">
 												<label for="numberOfSoruce" class="form-label">Number of
 													source/Reference</label>
 												<!-- numberOfSoruce -->
-												<input name="numberOfSoruce" type="number" class="form-control"
+												<input name="numberOfSoruce" type="number" class="form-control" value="0"
 													id="numberOfSoruce">
 											</div>
 										</div>
+
+										<hr>
+										<div class="row meta-data ">
+											<h6 class="text-center mb-3">Meta Data</h6>
+											<div class="row newfields">
+												<div class="row key-value">
+													<div class="col-2"></div>
+													<div class="mb-3 col-4">
+														<!-- numberOfSoruce -->
+														<input type="text" class="form-control fields key"
+															 placeholder="Enter Key Here!">
+													</div>
+													<div class="mb-3 col-4">
+														<!-- numberOfSoruce -->
+														<input type="text" class="form-control fields value"
+															placeholder="Enter Value Here!">
+													</div>
+													<div class="mt-0 col-2">
+														<i onclick="addField(this)" class="fa fa-add add-field"></i>
+													</div>
+												</div>
+											</div>
+											<input type="hidden" name="keyValuePiar" value="">
+										</div>
+										<hr>
+
+										
+
 										<div class="mb-3 col-12">
 											<label for="description" class="form-label">Description</label>
 											<textarea id="summernote"></textarea>
@@ -333,13 +529,13 @@
 										<div class="mb-3 col-6">
 											<label for="signed" class="form-label">Signed</label>
 											<!-- signed -->
-											<input name="signed" type="text" class="form-control" id="signed">
+											<input value="" name="signed" type="text" class="form-control" id="signed">
 										</div>
 
 										<div class="mb-3 col-6">
 											<label for="file-upload" class="form-label">Documents</label>
 											<!-- Document -->
-											<input name="files[]" type="file" class="form-control" id="file-upload"
+											<input value="" name="files[]" type="file" class="form-control" id="file-upload"
 												multiple>
 											<p id="file-name" class="mt-1"> </p>
 										</div>
@@ -358,6 +554,32 @@
 	</div>
 </div>
 
+<!-- 0 remove and show on number of Pages and reference -->
+<script>
+	document.querySelector('#numberOfPage').onfocus = ()=> {
+		if(event.currentTarget.value === '0'){
+			event.currentTarget.value = "";
+		}
+	}
+
+	document.querySelector('#numberOfPage').onblur = ()=> {
+		if(event.currentTarget.value === ""){
+			event.currentTarget.value = 0;
+		}
+	}
+
+	document.querySelector('#numberOfSoruce').onfocus = ()=> {
+		if(event.currentTarget.value === '0'){
+			event.currentTarget.value = "";
+		}
+	}
+
+	document.querySelector('#numberOfSoruce').onblur = ()=> {
+		if(event.currentTarget.value === ""){
+			event.currentTarget.value = 0;
+		}
+	}
+</script>
 
 <script>
 	$('textarea#summernote').summernote({
@@ -382,6 +604,34 @@
 </script>
 
 <script>
+	function addField(clickedButton) {
+		const key = Array.from(document.querySelectorAll('.key')).at(-1)
+		const value = Array.from(document.querySelectorAll('.value')).at(-1)
+		const keyValue = Array.from(document.querySelectorAll('.key-value')).at(-1)
+
+		kV = key.value
+		vV = value.value
+		key.value = "" 
+		value.value = ""
+		const newField = keyValue.cloneNode(true)
+		key.value = kV 
+		value.value = vV
+		clickedButton.removeAttribute('onclick')
+		clickedButton.setAttribute('onclick', 'removeField(this.parentNode.parentNode)')
+		clickedButton.classList.remove('fa-add')
+		clickedButton.classList.add('fa-minus')
+		clickedButton.style.background = "red";
+		const parentField = document.querySelector('.newfields')
+		parentField.appendChild(newField)
+	}
+	function removeField(clickedButton){
+		clickedButton.remove()
+	}
+
+	
+</script>
+
+<script>
 	document.querySelector('.note-editable').style.background = "rgba(0,0,0,0)"
 	document.querySelector('.note-editable').style.color = "white"
 
@@ -400,43 +650,18 @@
 
 	document.querySelector('#order-post').addEventListener('submit', (event) => {
 		event.preventDefault();
+		const key = Array.from(document.querySelectorAll('.newfields input.key'));
+		const value = Array.from(document.querySelectorAll('.newfields input.value'));
+		metaData = {data: {}}
+		for (let index = 0; index < key.length; index++) {
+			metaData['data'][key[index].value] = value[index].value;
+		}
+		
+		
+		document.querySelector('[name=keyValuePiar]').value = JSON.stringify(metaData)
+		
 		document.querySelector('#description').value = document.querySelector('.note-editable').innerHTML;
 		event.currentTarget.submit();
-	})
-
-	const dateCount = Array.from(document.querySelectorAll('.dateCount input'))
-	console.log(dateCount);
-	dateCount.forEach(item => {
-		item.addEventListener('input', () => {
-			const hours = document.querySelector('#Hours').value;
-			const days = document.querySelector('#Days').value;
-			const month = document.querySelector('#Months').value;
-
-			let oldDateObj = new Date();
-			let newDateObj = new Date();
-			let time1 = (60 * 60 * 1000)
-			time1 *= hours;
-
-			let time2 = (24 * 60 * 60 * 1000)
-			time2 *= days;
-
-			let time3 = (30 * 24 * 60 * 60 * 1000)
-			time3 *= month;
-
-			newDateObj.setTime(oldDateObj.getTime() + time1 + time2 + time3);
-
-			d = newDateObj.toString().split(" ")[2]
-			y = newDateObj.toString().split(" ")[3]
-			let [h, mi, s] = newDateObj.toString().split(" ")[4].split(":")
-			// console.log(newDateObj.getDay())
-			m = (newDateObj.getMonth() + 1)
-			m = m < 10 ? `0${m}` : m;
-
-
-			console.log(`${y}-${m}-${d}T${h}:${mi}:${s}`)
-			document.querySelector('#date').value = `${y}-${m}-${d}T${h}:${mi}`;
-
-		})
 	})
 </script>
 
@@ -468,19 +693,34 @@
 
 	document.querySelector('.saleAgents').onchange = () => {
 		let value = []
+		let finalvalue = []
+		const obj = {}
+		Array.from(document.querySelectorAll('.saleAgents option')).forEach(item => {
+			obj[item.textContent] = item.value;
+		})
 		Array.from(document.querySelectorAll('.saleAgents+.select2 .select2-selection__choice__display')).forEach(item => {
 			value.push(item.textContent);
 		})
-		document.querySelector('.saleAgentsInput').value = value.join()
+		value.forEach(item => {
+			finalvalue.push(obj[item])
+		})
+		document.querySelector('.saleAgentsInput').value = finalvalue.join()
 	};
 
 	document.querySelector('.assignedTo').onchange = () => {
 		let value = []
+		let finalvalue = []
+		const obj = {}
+		Array.from(document.querySelectorAll('.assignedTo option')).forEach(item => {
+			obj[item.textContent] = item.value;
+		})
 		Array.from(document.querySelectorAll('.assignedTo+.select2 .select2-selection__choice__display')).forEach(item => {
 			value.push(item.textContent);
 		})
-		console.log(value);
-		document.querySelector('.assignedToInput').value = value.join()
+		value.forEach(item => {
+			finalvalue.push(obj[item])
+		})
+		document.querySelector('.assignedToInput').value = finalvalue.join()
 	};
 </script>
 
@@ -504,7 +744,52 @@
 	}
 </script>
 
+<script>
+	document.querySelector('#oredrType').onchange = ()=>{
+		orderValue = event.currentTarget.value;
+		if(orderValue === "5"){
+			document.querySelector('[for=service]').textContent = "Service"
+			document.querySelector('[for=inputProductTitle]').textContent = "Langauge"
+			document.querySelector('.product').classList.remove('hide');
+			document.querySelector('.service').classList.remove('hide');
+			document.querySelector('.language').classList.add('hide');
+			document.querySelector('.technology').classList.add('hide');
+			document.querySelector('.writers').classList.remove('hide');
+		}else if(orderValue === "4"){
+			document.querySelector('[for=service]').textContent = "Technology"
+			document.querySelector('[for=inputProductTitle]').textContent = "Product"
+			document.querySelector('.product').classList.add('hide');
+			document.querySelector('.service').classList.add('hide');
+			document.querySelector('.language').classList.remove('hide');
+			document.querySelector('.technology').classList.remove('hide');
+			document.querySelector('.writers').classList.add('hide');
+		}
+	}
+</script>
 
+<script>
+	function success(){
+	Swal.fire({
+  icon: 'success',
+  title: 'Order Created'
+	})}
+
+	function error(){
+	Swal.fire({
+  icon: 'error',
+  title: 'Something Went Wrong'
+	})}
+</script>
+
+{% if message =='success' %}
+<script>
+	success()
+</script>
+{% elif message =='error' %}
+<script>
+	error()
+</script>
+{% endif %}
 
 <style>
 	.select2-dropdown {
