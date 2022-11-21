@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.socket.io/4.5.3/socket.io.min.js" integrity="sha384-WPFUvHkB1aHA5TDSZi6xtDgkF0wXJcIIxXhC6h8OT8EH3fC5PWro5pWJ1THjcfEi" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- <h2>Name: {{name}}</h2> -->
+    <h2>Welcome to Room: {{room}}</h2>
+
+    <div id="messages"></div>
+
+    <form action="" id="message_input_form">
+        <input type="text" name="" id="message_input" placeholder="chat here">
+        <button type="submit">SEND</button>
+    </form>
+
+
+    <script>
+        // const socket = io.connect("http://127.0.0.1:5000/");
+        const socket = io.connect("http://192.168.1.4:5000/");
+        socket.on('connect', function(){
+            socket.emit('join_room',{
+                username: "{{ name }}",
+                room: "{{ room }}"
+            });
+
+            let message_input = document.getElementById('message_input');
+            document.getElementById('message_input_form').onsubmit = function(e){
+                e.preventDefault();
+                let message = message_input.value.trim();
+                if (message.length){
+                    socket.emit('send_message', {
+                        username: "{{ name }}",
+                        room: "{{ room }}",
+                        message: message
+                    })
+                }
+                message_input.value = '';
+                message_input.focus();
+            }
+        });
+
+        socket.on('receive_message', function(data){
+            console.log(data);
+            const newNode = document.createElement('div');
+            newNode.innerHTML = `${data.username}: ${data.message}`;
+            document.getElementById('messages').appendChild(newNode);
+        });
+
+        socket.on('join_room_announcement', function(data){
+            console.log(data);
+            const newNode = document.createElement('div');
+            newNode.innerHTML = `${data.username} has Joined`;
+            document.getElementById('messages').appendChild(newNode);
+
+        })
+
+
+
+    </script>
+
+</body>
+</html>

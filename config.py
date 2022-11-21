@@ -1,12 +1,17 @@
 from flask import Flask
 from flask_mysqldb import MySQL
 import os
+from flask_cors import CORS
+from flask_socketio import SocketIO
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 app = Flask(__name__)
 
 mysql = MySQL(app)
+CORS(app)
+socketio = SocketIO(app)
+
 app.config['MYSQL_USER'] = os.getenv('DB_USERNAME')
 app.config['MYSQL_PASSWORD'] = os.getenv('DB_PASSWORD')
 app.config['MYSQL_HOST'] = os.getenv('DB_HOST')

@@ -142,30 +142,30 @@ class Admin:
         return_data = cursor.fetchall()
         return return_data
 
-    def test_data(self):
+    def get_order(self,id):
         cursor = mysql.connection.cursor()
-        my_query = """SELECT order_id_fk , order_title, order_date, order_status, order_complete, order_deadline, order_pageNo,
+        my_query = f"""SELECT order_id, order_title, order_date, order_status, order_complete, order_deadline, order_pageNo,
         order_subjectArea, order_style, order_sourceNo, order_description, order_signature, order_detail.order_code, 
-        order_acadmicLevel, service_name, product_name, order_metadata, order_service_dev, order_product_dev,
+        order_acadmicLevel, service_name, product_name, order_metadata, order_service_dev, order_product_dev, drive_folder_id,
         group_concat(employee_name) employee_name, group_concat(order_assign_status) order_assign_status,
         group_concat(order_emp_status) order_emp_status
         FROM order_detail INNER JOIN order_employee_association ON order_detail.order_id = order_employee_association.order_id_fk
         INNER JOIN employee_detail ON employee_detail.employee_id = order_employee_association.employee_id_fk
         LEFT JOIN service_table ON order_detail.order_service = service_table.service_id LEFT JOIN product_table ON
-        order_detail.order_product = product_table.product_id
-        WHERE order_id = 20; """
+        order_detail.order_product = product_table.product_id LEFT JOIN documents ON order_detail.order_id = documents.order_id_fk
+        WHERE order_id = {id} GROUP BY order_id;"""
         cursor.execute(my_query)
         return_data = cursor.fetchall()
         return return_data
 
-    def get_order(self):
+    def get_all_order(self,limit,offset):
         cursor = mysql.connection.cursor()
-        my_query = """SELECT order_id , order_detail.order_code, order_status, order_title, order_deadline, group_concat(employee_name) employee_name, 
+        my_query = f"""SELECT order_id , order_detail.order_code, order_status, order_title, order_deadline, group_concat(employee_name) employee_name, 
         group_concat(order_assign_status) order_assign, Price_order, currency
         FROM order_detail INNER JOIN order_employee_association ON order_detail.order_id = order_employee_association.order_id_fk 
         INNER JOIN employee_detail ON employee_detail.employee_id = order_employee_association.employee_id_fk INNER JOIN
         order_price ON order_detail.order_id = order_price.order_id_fk
-        GROUP BY order_id """
+        GROUP BY order_id LIMIT {limit} OFFSET {offset}"""
         cursor.execute(my_query)
         return_data = cursor.fetchall()
         return return_data

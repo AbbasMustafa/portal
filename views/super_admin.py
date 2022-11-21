@@ -184,26 +184,36 @@ def order_create_view():
         return render_template('superAdmin/add-new-order.html', sale=saleAgent, production=productionPerson, service=service, product=product, orderId=orderId, message=message)
 
 
+@superAdmin.route('/order', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
+def orders():
+    return render_template('superAdmin/all-order.html')
+
+
+
 @superAdmin.route('/all-order', methods=['GET', 'POST'])
 @login_required
 @authorize(my_roles=['Administration'])
 @try_except
 def get_all_order():
-    data = AdminQueryGet.get_order()
-    docs = get_docs()
-    print(docs)
+    limit = int(request.args.get('rangeEnd'))
+    offset = int(request.args.get('rangeStart'))
+    data = AdminQueryGet.get_all_order(limit, offset)
     return jsonify(data = data)
 
 
+@superAdmin.route('/get-order/<id>', methods=['GET', 'POST'])
+@login_required_with_param
+@authorize_with_param(my_roles=['Administration'])
+@try_except_with_param
+def get_orders(id):
+    data = AdminQueryGet.get_order(id)
+    googlefile = fileGet(data[0]['drive_folder_id'])
 
+    return jsonify(data = data[0], googlFiles = googlefile)
 
-# @superAdmin.route('/json-test', methods=['GET', 'POST'])
-# def json_test():
-    # resp = AdminQueryGet.test_data()
-    # res = requests.get(f"https://www.googleapis.com/drive/v2/files?q='1mWLRE14TeJXtJWUyYcBo27aMi84fjCM7'+in+parents&key=AIzaSyBnRf27nUBXxCXlT0fku7r56KlZ3nkf4WE")
-    # print("res ========= ",res )
-    
-    # return str(res)
 
 
 # @superAdmin.route('/add-department', methods=['GET', 'POST'])

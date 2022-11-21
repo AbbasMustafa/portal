@@ -7,6 +7,8 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import google.auth
 from googleapiclient.http import MediaFileUpload
+import requests
+from flask import json 
 
 
 # If modifying these scopes, delete the file token.json.
@@ -73,7 +75,9 @@ def fileUpload(fileName, orderId, directory):
         return None
 
 
-def get_docs():
+def fileGet(folderId):
+
+    filesDetail = []
 
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
@@ -97,32 +101,50 @@ def get_docs():
 
         creds, _ = google.auth.default()
 
-        try:
+    try:
+        service = build('drive', 'v3', credentials=creds)
+
+        # Call the Drive v3 API
+        results = service.files().list(q=f" '{folderId}' in parents and trashed = false",
+                                            spaces='drive',
+            pageSize=10, fields="nextPageToken, files(*)").execute()
+        items = results.get('files', [])
+
+        if not items:
+            print('No files found.')
+            return
+        print('Files:')
+        for item in items:
+            filesDetail.append([item['name'],item['webViewLink']])
+            # print(item['name'])
+            # print(item['webViewLink'])
+
+            # print(u'{0} ({1}) {2}'.format(item['name'], item['id'], item['selfLink']))
+
+        return filesDetail
+    
+    except HttpError as error:
+        # TODO(developer) - Handle errors from drive API.
+        print(f'An error occurred: {error}')
+    
+    
+    # try:
         # create drive api client
-            service = build('drive', 'v3', credentials=creds)
-            files = []
-            page_token = None
-            while True:
-                # pylint: disable=maybe-no-member
-                response = service.files().list(q="mimeType='application/vnd.google-apps.folder'",
-                                                spaces='drive',
-                                                fields='nextPageToken, '
-                                                    'files(id, name)',
-                                                pageToken=page_token).execute()
-                for file in response.get('files', []):
-                    # Process change
-                    print(F'Found file: {file.get("name")}, {file.get("id")}')
-                files.extend(response.get('files', []))
-                page_token = response.get('nextPageToken', None)
-                if page_token is None:
-                    break
+        # service = build('drive', 'v3', credentials=creds)
+    #     folder_id = '1mWLRE14TeJXtJWUyYcBo27aMi84fjCM7'
+    #     query = f"parents = {folder_id}"
 
-        except HttpError as error:
-            print(F'An error occurred: {error}')
-            files = None
+    #     response = service.files().list(q=query).execute()
+    #     files = response.get('files')
+    #     nextPageToken = response.get('nextPageToken')
+    #     print(f'Response: {response}')
 
-        return files
-    
-    
-
-# main()
+    #     while nextPageToken:
+    #         response = service.files().list(q=query).execute()
+    #         files.extend(response.get('files'))
+    #         nextPageToken = response.get('nextPageToken')
+    #         print(f'Response: {response}')
+        
+    # except HttpError as error:
+    #     # TODO(developer) - Handle errors from drive API.
+    #     print(f'An error occurred: {error}')

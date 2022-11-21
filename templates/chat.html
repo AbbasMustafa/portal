@@ -7,8 +7,14 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="{{ url_for('upload_f')}}" enctype="multipart/form-data" method="POST">
-        <input class="file-names" type="file" name="file[]" multiple="">
+    <form action="{{url_for('chat1')}}">
+        <div>
+            <input type="text" name="name" id="" placeholder="name">
+        </div>
+        <div>
+            <input type="text" name="room" id="" placeholder="room">
+        </div>
+
         <button type="submit">Submit</button>
     </form>
 </body>
