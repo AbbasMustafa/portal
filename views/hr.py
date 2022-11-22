@@ -67,9 +67,9 @@ def list_user_view():
 
 
 @hr.route('/edit-user/<id>', methods=['GET', 'POST'])
-@login_required_with_param
-@authorize_with_param(my_roles=['Human Resource'])
-@try_except_with_param
+@login_required
+@authorize(my_roles=['Human Resource'])
+@try_except
 def edit_user_view(id):
     print(id)
     if request.method == 'POST':
@@ -103,9 +103,9 @@ def delete_user_view():
 
 
 @hr.route('/employee-info/<id>', methods=['GET', 'POST'])
-@login_required_with_param
-@authorize_with_param(my_roles=['Human Resource'])
-@try_except_with_param
+@login_required
+@authorize(my_roles=['Human Resource'])
+@try_except
 def employee_info_view(id):
 
     emp_infor = HrQueryGet.empInfo(id)

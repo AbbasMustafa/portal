@@ -9,6 +9,7 @@ from utils.auth import *
 from utils.redirectRouter import *
 from utils.google_drive import *
 from queries.globalQuery import *
+from chat.Chats import chat
 from flask_socketio import join_room
 
 # app = Flask(__name__)
@@ -20,6 +21,7 @@ app.register_blueprint(hr, url_prefix = '/hr')
 app.register_blueprint(sale, url_prefix = '/sale')
 # app.register_blueprint(writer, url_prefix = '/writer')
 app.register_blueprint(production, url_prefix = '/developer')
+app.register_blueprint(chat, url_prefix = '/chat')
 
 
 
@@ -73,37 +75,6 @@ def forgot_password_view():
 def logout_view():
     session.clear()
     return redirect(url_for('login_view'))
-
-
-
-@app.route('/chat', methods=['GET','POST'])
-def chat():
-    # name = request.args.get('name')
-    # room = request.args.get('room')
-
-    return render_template('chat.html')
-
-
-
-@app.route('/chat1',methods=['GET', 'POST'])
-def chat1():
-    name = request.args.get('name')
-    room = request.args.get('room')
-
-    return render_template('chat1.html', name=name,room=room) 
-
-
-@socketio.on('join_room')
-def handle_join_room_event(data):
-    # print(data)
-    join_room(data['room'])
-    socketio.emit('join_room_announcement', data)
-
-
-@socketio.on('send_message')
-def handle_send_message(data):
-    socketio.emit('receive_message', data, room=data['room'])
-
 
 
 

@@ -4,7 +4,7 @@ from queries.getQuery import AdminQueryGet
 from queries.deleteQuery import AdminQueryDelete
 from queries.updateQuery import AdminQueryUpdate
 from queries.postQuery import AdminQueryPost
-from utils.auth import authorize_with_param, login_required, authorize, login_required_with_param
+from utils.auth import *
 from utils.error_handler import *
 from utils.google_drive import *
 
@@ -85,9 +85,9 @@ def delete_user_view():
 
 
 @superAdmin.route('/edit-user/<id>', methods=['GET', 'POST'])
-@login_required_with_param
-@authorize_with_param(my_roles=['Administration'])
-@try_except_with_param
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
 def edit_user_view(id):
     if request.method == 'POST':
         if len(request.form) == 15 or len(request.form) == 16:
@@ -106,9 +106,9 @@ def edit_user_view(id):
 
 
 @superAdmin.route('/employee-info/<id>', methods=['GET', 'POST'])
-@login_required_with_param
-@authorize_with_param(my_roles=['Administration'])
-@try_except_with_param
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
 def employee_info_view(id):
 
     emp_infor = AdminQueryGet.empInfo(id)
@@ -205,9 +205,9 @@ def get_all_order():
 
 
 @superAdmin.route('/get-order/<id>', methods=['GET', 'POST'])
-@login_required_with_param
-@authorize_with_param(my_roles=['Administration'])
-@try_except_with_param
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
 def get_orders(id):
     data = AdminQueryGet.get_order(id)
     googlefile = fileGet(data[0]['drive_folder_id'])

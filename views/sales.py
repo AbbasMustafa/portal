@@ -19,9 +19,9 @@ def home_view():
 
 
 @sale.route('/employee-info/<id>', methods=['GET', 'POST'])
-@login_required_with_param
-@authorize_with_param(my_roles=['Sales'])
-@try_except_with_param
+@login_required
+@authorize(my_roles=['Sales'])
+@try_except
 def employee_info_view(id):
 
     emp_infor = SaleQueryGet.empInfo(id)
