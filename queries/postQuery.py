@@ -5,10 +5,10 @@ from utils.google_drive import *
 
 class Admin:
     def create_users(self, formData):
+
         try:
             self.emp_name = formData['employeeName']
             self.password = formData['password']
-            self.confPassword = formData['confPassword']
             self.companyEmail = formData['companyEmail']
             self.department = formData['department']
             self.managers = formData['managers']
@@ -24,6 +24,12 @@ class Admin:
             self.accountTitle = formData['accountTitle']
             self.accountNo = formData['accountNo']
 
+            if self.managers == "" or not self.managers:
+                self.managers = None
+
+            if self.salary == "" or not self.salary:
+                self.salary = None
+            
             cursor = mysql.connection.cursor()
 
             my_query = """INSERT INTO employee_detail (employee_name, employee_address, employee_city, 
@@ -64,7 +70,7 @@ class Admin:
             mysql.connection.commit()
 
             return "success"
-        except:
+        except Exception as e:
             return "error"
 
     # def add_department(self, depart):
@@ -154,7 +160,7 @@ class Admin:
             return "success"
 
         except Exception as e:
-            print(e)
+            # print(e)
             return "error"
 
         
@@ -169,7 +175,6 @@ class Hr:
         try:
             self.emp_name = formData['employeeName']
             self.password = formData['password']
-            self.confPassword = formData['confPassword']
             self.companyEmail = formData['companyEmail']
             self.department = formData['department']
             self.managers = formData['managers']
@@ -209,7 +214,8 @@ class Hr:
 
             return "success"
 
-        except:
+        except Exception:
+            # print(Exception)
             return "error"
 
 

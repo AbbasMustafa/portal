@@ -26,24 +26,15 @@ def home_view():
 @try_except
 def create_user_view():
     if request.method == 'POST':
-        if len(request.form) == 17:
-            message = HrQueryPost.create_users(request.form)
-        else: 
-            return render_template('hr/createUser.html', department=resp_department, manager=resp_manager, 
-            role=resp_Role, error_msg = 'fill all field')   
-        
-        return redirect(url_for('hr.create_user_view', message=message))
+        message = HrQueryPost.create_users(request.get_json()) 
+        return jsonify({'message':message})   
     
     else:
-        if request.args.get('message'):
-            message =message
-        else:
-            message = ""
         
         resp_department = HrQueryGet.get_Department()
         resp_manager = HrQueryGet.get_Manager()
         resp_Role = HrQueryGet.get_Role()
-    return render_template('hr/createUser.html', department=resp_department, manager=resp_manager, role=resp_Role, message=message)
+        return jsonify({'department':resp_department, 'manager':resp_manager, 'role':resp_Role})
 
 
 
@@ -62,7 +53,7 @@ def list_user_view():
 
     resp_all_user = HrQueryGet.get_all_user()
 
-    return render_template('hr/all-user.html', users = resp_all_user)
+    return jsonify(users = resp_all_user)
 
 
 
@@ -71,19 +62,16 @@ def list_user_view():
 @authorize(my_roles=['Human Resource'])
 @try_except
 def edit_user_view(id):
-    print(id)
     if request.method == 'POST':
-        if len(request.form) == 15:
-            HrQueryUpdate.edit_user(request.form, id)
-        else:
-            return render_template('hr/profile-edit.html', resp_user_detail = user_details, dept=resp_department, manager=resp_manager, role=resp_Role, error_msg = 'fill all field' )
+        message = HrQueryUpdate.edit_user(request.get_json(), id)
+        return jsonify({'message': message}) 
         
-
-    user_details= HrQueryGet.edit_user_get(id)
-    resp_department = HrQueryGet.get_Department()
-    resp_manager = HrQueryGet.get_Manager()
-    resp_Role = HrQueryGet.get_Role()
-    return render_template('hr/profile-edit.html', resp_user_detail = user_details, dept=resp_department, manager=resp_manager, role=resp_Role)
+    else:
+        user_details= HrQueryGet.edit_user_get(id)
+        resp_department = HrQueryGet.get_Department()
+        resp_manager = HrQueryGet.get_Manager()
+        resp_Role = HrQueryGet.get_Role()
+        return jsonify({'resp_user_detail':user_details, 'dept':resp_department, 'manager':resp_manager, 'role':resp_Role})
 
 
 @hr.route('/delete-user', methods=['GET', 'POST'])
@@ -95,7 +83,6 @@ def delete_user_view():
 
         id = request.get_json()['userId']
         active = request.get_json()['active']
-        print(active, id)
         body = HrQueryDelete.delete_user(id, active)
 
         return jsonify(body=body)
@@ -110,7 +97,7 @@ def employee_info_view(id):
 
     emp_infor = HrQueryGet.empInfo(id)
 
-    return render_template('hr/emp-info.html', emp_infor=emp_infor)
+    return jsonify (emp_infor=emp_infor)
 
 
 
@@ -121,4 +108,4 @@ def employee_info_view(id):
 def user_status_view():
     userStatus = request.args.get('status')
     filter_users = HrQueryGet.user_status(userStatus)
-    return render_template('hr/all-user.html', users = filter_users)
+    return jsonify(users = filter_users)

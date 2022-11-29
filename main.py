@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request, session, url_for, redirect
+from flask import Flask, jsonify, render_template, request, session, url_for, redirect, make_response
 from config import *
 from views.super_admin import superAdmin
 from views.hr import hr
@@ -29,28 +29,36 @@ app.register_blueprint(chat, url_prefix = '/chat')
 @app.route('/login', methods=['GET','POST'])
 @try_except
 def login_view():
-    if 'user_role' in session:
-        return route_to()
+    # if 'user_role' in session:
+    #     return route_to()
 
-    else:
-        if request.method == "POST":
-            user_name = request.form.get('username')
-            password = request.form.get('pass')
-            return_data = login_query(user_name, password)
-            if return_data:
-                session['allowed'] = return_data[0]['department_name']
-                session['user_role'] = return_data[0]['role_name']
-                session['emp_name'] = return_data[0]['employee_name']
-                session['designation'] = return_data[0]['designation']
-                session['emp_id'] = return_data[0]['employee_id_fk']
-                return route_to()
-                # session['allowed'] = ['Administration', 'Human Resource', 'Sales']
+    # else:
+    if request.method == "POST":
+        
+        user_name = request.get_json()['username']
+        password = request.get_json()['pass']
+        # user_name = request.form['username']
+        # password = request.form['pass']
 
-            else:
-                message = 'Wrong Credentials Or You have no acces to portal'
-                return render_template('login.html', message=message)     
+        return_data = login_query(user_name, password)
+        if return_data:
+            session['allowed'] = return_data[0]['department_name']
+            session['user_role'] = return_data[0]['role_name']
+            session['emp_name'] = return_data[0]['employee_name']
+            session['designation'] = return_data[0]['designation']
+            session['emp_id'] = return_data[0]['employee_id_fk']
+            
+            return jsonify(message = 'Login Success' , URL = return_data[0]['department_name'], 
+            name=return_data[0]['employee_name'], designation=return_data[0]['designation'], 
+            user_role=return_data[0]['role_name'], emp_id = return_data[0]['employee_id_fk'])
+            # session['allowed'] = ['Administration', 'Human Resource', 'Sales'
+            # return render_template('login.html')
+
         else:
-            return render_template('login.html')
+            message = 'Wrong Credentials Or You have no acces to portal'
+            return jsonify(message=message, URL = '#')    
+    # else:
+    #     return render_template('login.html')
 
 
 @try_except
@@ -73,9 +81,9 @@ def forgot_password_view():
 @login_required
 @try_except
 def logout_view():
-    session.clear()
-    return redirect(url_for('login_view'))
-
+    # session.clear()
+    # print(request.headers.get('set-cookie'))
+    return jsonify(message = 'Logout successful')
 
 
 # ======================================================================================

@@ -7,9 +7,8 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 app = Flask(__name__)
-
+cors = CORS(app)
 mysql = MySQL(app)
-CORS(app)
 socketio = SocketIO(app)
 
 app.config['MYSQL_USER'] = os.getenv('DB_USERNAME')

@@ -27,25 +27,16 @@ def home_view():
 @try_except
 def create_user_view():
     if request.method == 'POST':
-        if len(request.form) == 17 or len(request.form) == 18:
-            message = AdminQueryPost.create_users(request.form)
-        else: 
-            return render_template('superAdmin/createUser.html', department=resp_department, manager=resp_manager, 
-            role=resp_Role, error_msg = 'fill all field')   
-        
-        return redirect(url_for('superAdmin.create_user_view', message = message))
+        message = AdminQueryPost.create_users(request.get_json())
+        return jsonify({'message':message})
+      
     
     else:
-
-        if request.args.get('message'):
-            message = request.args.get('message')
-        else:
-            message = ""
 
         resp_department = AdminQueryGet.get_Department()
         resp_manager = AdminQueryGet.get_Manager()
         resp_Role = AdminQueryGet.get_Role()
-    return render_template('superAdmin/createUser.html', department=resp_department, manager=resp_manager, role=resp_Role, message=message)
+        return jsonify({'department':resp_department, 'manager':resp_manager, 'role':resp_Role})
 
 
 
@@ -64,7 +55,7 @@ def list_user_view():
 
     else:
         resp_all_user = AdminQueryGet.get_all_user()
-        return render_template('superAdmin/all-user.html', users = resp_all_user)
+        return jsonify( users = resp_all_user)
 
 
 
@@ -90,18 +81,18 @@ def delete_user_view():
 @try_except
 def edit_user_view(id):
     if request.method == 'POST':
-        if len(request.form) == 15 or len(request.form) == 16:
-            AdminQueryUpdate.edit_user(request.form, id)
-        else:
-            return render_template('superAdmin/profile-edit.html', resp_user_detail = user_details, dept=resp_department, manager=resp_manager, role=resp_Role, error_msg = 'fill all field' )
         
-
-    user_details= AdminQueryGet.edit_user_get(id)
-    resp_department = AdminQueryGet.get_Department()
-    resp_manager = AdminQueryGet.get_Manager()
-    resp_Role = AdminQueryGet.get_Role()
-    resp_isAdmin = AdminQueryGet.is_manager(id)
-    return render_template('superAdmin/profile-edit.html', resp_user_detail = user_details, dept=resp_department, manager=resp_manager, role=resp_Role, isAdmin=resp_isAdmin)
+        message = AdminQueryUpdate.edit_user(request.get_json(), id)
+        return jsonify({'message': message})
+    
+    else:
+        user_details= AdminQueryGet.edit_user_get(id)
+        resp_department = AdminQueryGet.get_Department()
+        resp_manager = AdminQueryGet.get_Manager()
+        resp_Role = AdminQueryGet.get_Role()
+        resp_isManager = AdminQueryGet.is_manager(id)
+        return jsonify ({'resp_user_detail': user_details, 'dept':resp_department, 'manager':resp_manager, 'role':resp_Role, 
+            'isManager':resp_isManager})
 
 
 
@@ -113,7 +104,7 @@ def employee_info_view(id):
 
     emp_infor = AdminQueryGet.empInfo(id)
 
-    return render_template('superAdmin/emp-info.html', emp_infor=emp_infor)
+    return jsonify(emp_infor=emp_infor)
 
 
 
@@ -124,7 +115,7 @@ def employee_info_view(id):
 def user_status_view():
     userStatus = request.args.get('status')
     filter_users = AdminQueryGet.user_status(userStatus)
-    return render_template('superAdmin/all-user.html', users = filter_users)
+    return jsonify(users = filter_users)
 
 
 
@@ -160,13 +151,10 @@ def order_create_view():
                     file.save(os.path.join(directory, file.filename))
                     doctype.append(file.filename.split('.')[-1])
                     saveDir.append(f'{directory}/{file.filename}')
-            
-            
-    
+                            
             resp = AdminQueryPost.create_orders(request.form, saveDir, doctype, directory, fileName)
             
             # fileUpload(fileName, orderId, directory)
-
 
         return redirect(url_for('superAdmin.order_create_view', message = resp))
 

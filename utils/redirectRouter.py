@@ -7,16 +7,16 @@ def route_to():
     if 'user_role' in session:
         
         if session['allowed'] == 'Administration':
-            return redirect(url_for('superAdmin.home_view'))
+            return 'admin'
         
         elif session['allowed'] == 'Human Resource':
-            return redirect(url_for('hr.home_view'))
+            return 'hr'
         
         elif session['allowed'] == 'Sales':
-            return redirect(url_for('sale.home_view'))
+            return 'sale'
         
         elif session['allowed'] == 'Production':
-            return redirect(url_for('production.home_view'))
+            return 'production'
 
     
     else:
