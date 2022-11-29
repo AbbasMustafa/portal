@@ -17,7 +17,7 @@ def home_view():
     
     activeUser = HrQueryGet.activeUser()
     banUser = HrQueryGet.banUser()
-    return render_template('hr/index.html', activeUser= activeUser, banUser=banUser)
+    return jsonify (activeUser= activeUser, banUser=banUser)
 
 
 @hr.route('/create-user', methods=['GET', 'POST'])
@@ -97,7 +97,7 @@ def employee_info_view(id):
 
     emp_infor = HrQueryGet.empInfo(id)
 
-    return jsonify (emp_infor=emp_infor)
+    return jsonify(emp_infor=emp_infor)
 
 
 
