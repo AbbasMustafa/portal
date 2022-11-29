@@ -186,6 +186,17 @@ class Hr (Admin):
         cursor.execute(my_query)
         return_data = cursor.fetchall()
         return return_data
+    
+    def get_all_user(self):
+        cursor = mysql.connection.cursor()
+        my_query = """SELECT employee_id, employee_name, designation, salary, register_date, manager_name, 
+        department_name, active FROM employee_detail INNER JOIN manager_table ON
+        employee_detail.employee_manager_id = manager_table.manager_id INNER JOIN department ON 
+        employee_detail.employee_department_id = department.department_id INNER JOIN login_credential ON
+        login_credential.employee_id_fk = employee_detail.employee_id AND department_name != 'Administration' """
+        cursor.execute(my_query)
+        return_data = cursor.fetchall()
+        return return_data
 
     # def activeUser(self):
     #     cursor = mysql.connection.cursor()
