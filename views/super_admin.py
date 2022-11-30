@@ -134,7 +134,7 @@ def order_create_view():
     
     if request.method == 'POST':
         
-        fileName =[]
+        fileName = []
         doctype = []
         saveDir = []
 
@@ -156,20 +156,20 @@ def order_create_view():
             
             # fileUpload(fileName, orderId, directory)
 
-        return redirect(url_for('superAdmin.order_create_view', message = resp))
+        return jsonify({"message": resp})
 
     else:
-        if request.args.get('message'):
-            message = request.args.get('message')
-        else:
-            message = ""
+        # if request.args.get('message'):
+        #     message = request.args.get('message')
+        # else:
+        #     message = ""
 
         saleAgent = AdminQueryGet.get_sale_agent()
         productionPerson = AdminQueryGet.get_production()
         service = AdminQueryGet.get_service()
         product = AdminQueryGet.get_product()
 
-        return render_template('superAdmin/add-new-order.html', sale=saleAgent, production=productionPerson, service=service, product=product, orderId=orderId, message=message)
+        return jsonify({"sale":saleAgent, "production":productionPerson, "service":service, "product":product, "orderId":orderId})
 
 
 @superAdmin.route('/order', methods=['GET', 'POST'])

@@ -119,12 +119,12 @@ class Admin:
             my_query = """INSERT INTO order_detail (order_title, order_date, order_service, order_product, 
             order_deadline, order_pageNo, order_subjectArea, order_style, order_sourceNo, order_description, 
             order_signature, order_code, order_acadmicLevel, order_type, order_metadata, order_service_dev, 
-            order_product_dev, currency)
-            VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+            order_product_dev)
+            VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
             data = (self.orderTitle, datetime.today(), self.service, self.product, self.deadline,
             self.numberOfPage, self.subjectArea, self.style, self.numberOfSoruce, self.description,
             self.signed, self.orderCode, self.AcedmicLevel, self.oredrType, self.keyValuePiar, self.serviceDev, 
-            self.productDev, self.currency,)
+            self.productDev,)
             cursor.execute(my_query, data)
             mysql.connection.commit()
 
@@ -144,8 +144,8 @@ class Admin:
                 cursor.execute(my_query, data)
                 mysql.connection.commit()
 
-            my_query = """INSERT INTO order_price (Price_order, order_id_fk, order_code) VALUES(%s,%s,%s)"""
-            data = (self.totalCost, orderID[0]['order_id'], self.orderCode,)
+            my_query = """INSERT INTO order_price (Price_order, order_id_fk, order_code, currency) VALUES(%s,%s,%s,%s)"""
+            data = (self.totalCost, orderID[0]['order_id'], self.orderCode, self.currency,)
             cursor.execute(my_query, data)
             mysql.connection.commit()
 
@@ -157,10 +157,10 @@ class Admin:
                 cursor.execute(my_query, data)
                 mysql.connection.commit()
             
-            return "success"
+            return "Order Created"
 
         except Exception as e:
-            # print(e)
+            print(e)
             return "error"
 
         

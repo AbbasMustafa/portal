@@ -198,20 +198,6 @@ class Hr (Admin):
         return_data = cursor.fetchall()
         return return_data
 
-    # def activeUser(self):
-    #     cursor = mysql.connection.cursor()
-    #     my_query = """SELECT COUNT(login_email) FROM login_credential WHERE active = 1 """
-    #     cursor.execute(my_query)
-    #     return_data = cursor.fetchall()
-    #     return return_data
-
-    # def banUser(self):
-    #     cursor = mysql.connection.cursor()
-    #     my_query = """SELECT COUNT(login_email) FROM login_credential WHERE active = 0 """
-    #     cursor.execute(my_query)
-    #     return_data = cursor.fetchall()
-    #     return return_data
-
 
 
 class Sales (Admin):

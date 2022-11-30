@@ -17,7 +17,7 @@ def home_view():
     
     activeUser = HrQueryGet.activeUser()
     banUser = HrQueryGet.banUser()
-    return jsonify (activeUser= activeUser, banUser=banUser)
+    return jsonify ({'activeUser':activeUser[0]['COUNT(login_email)'], 'banUser':banUser[0]['COUNT(login_email)']})
 
 
 @hr.route('/create-user', methods=['GET', 'POST'])
