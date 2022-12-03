@@ -81,7 +81,7 @@ class Admin:
     #     mysql.connection.commit()
     #     return "Department Added"
 
-    def create_orders(self, formData, saveDir, doctype, directory, fileName):
+    def create_orders(self, formData, saveDir, doctype, directory, fileName, userId):
         
         try:
             self.orderCode = formData['orderCode']
@@ -112,9 +112,11 @@ class Admin:
             saleAgent = self.saleAgent.split(',')
             assignedTo = self.assignedTo.split(',')
 
-            if not self.service or not self.product:
+            if not self.service or not self.product or not self.numberOfPage or not self.numberOfSoruce:
                 self.service = None
                 self.product = None
+                self.numberOfPage = None
+                self.numberOfSoruce = None
 
             my_query = """INSERT INTO order_detail (order_title, order_date, order_service, order_product, 
             order_deadline, order_pageNo, order_subjectArea, order_style, order_sourceNo, order_description, 
@@ -132,6 +134,17 @@ class Admin:
             cursor.execute(my_query)
             orderID = cursor.fetchall()
 
+            
+            if len(fileName) > 0:
+                googleDoc = fileUpload(fileName, orderID[0]['order_id'], directory)
+
+                for i in range(len(doctype)):
+                    my_query = """INSERT INTO documents (document_path, order_id_fk, document_type, drive_folder_id, drive_file_id, order_code) VALUES(%s,%s,%s,%s,%s,%s)"""
+                    data = (saveDir[i], orderID[0]['order_id'], doctype[i], googleDoc[0], googleDoc[1][i], self.orderCode,)
+                    cursor.execute(my_query, data)
+                    mysql.connection.commit()
+
+
             for saleAgent in saleAgent:
                 my_query = """INSERT INTO order_employee_association (employee_id_fk, order_id_fk, order_emp_status, order_code, order_assign_status) VALUES(%s,%s,%s,%s,%s)"""
                 data = (saleAgent, orderID[0]['order_id'], 'Active', self.orderCode, 'assign by',)
@@ -148,14 +161,34 @@ class Admin:
             data = (self.totalCost, orderID[0]['order_id'], self.orderCode, self.currency,)
             cursor.execute(my_query, data)
             mysql.connection.commit()
+            
 
-            googleDoc = fileUpload(fileName, orderID[0]['order_id'], directory)
+            my_query = """INSERT INTO chat_table (created_by, created_at) VALUES(%s,%s)"""
+            data = (userId, datetime.today(),)
+            cursor.execute(my_query, data)
+            mysql.connection.commit()
 
-            for i in range(len(doctype)):
-                my_query = """INSERT INTO documents (document_path, order_id_fk, document_type, drive_folder_id, drive_file_id, order_code) VALUES(%s,%s,%s,%s,%s,%s)"""
-                data = (saveDir[i], orderID[0]['order_id'], doctype[i], googleDoc[0], googleDoc[1][i], self.orderCode,)
+            my_query = """SELECT chat_room_id FROM chat_table order by chat_room_id desc"""
+            cursor.execute(my_query)
+            chatRoom = cursor.fetchall()
+
+            my_query = f"""UPDATE order_detail SET order_chat_room = '{chatRoom[0]['chat_room_id']}' WHERE order_id = '{orderID[0]['order_id']}' """
+            cursor.execute(my_query)
+            mysql.connection.commit()
+
+            for saleAgent in saleAgent:
+                my_query = """INSERT INTO chat_association_table (employee_id_fk, room_id_fk) VALUES(%s,%s)"""
+                data = (saleAgent, chatRoom[0]['chat_room_id'],)
                 cursor.execute(my_query, data)
                 mysql.connection.commit()
+
+            for assignedTo in assignedTo:
+                my_query = """INSERT INTO chat_association_table (employee_id_fk, room_id_fk) VALUES(%s,%s)"""
+                data = (assignedTo, chatRoom[0]['chat_room_id'],)
+                cursor.execute(my_query, data)
+                mysql.connection.commit()
+
+
             
             return "Order Created"
 
@@ -165,10 +198,6 @@ class Admin:
 
         
 
-
-        
-
-        
 class Hr:
     
     def create_users(self, formData):

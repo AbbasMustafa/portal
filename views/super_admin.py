@@ -138,6 +138,8 @@ def order_create_view():
         doctype = []
         saveDir = []
 
+        userId = request.headers['emp_id']
+
         uploaded_files = request.files.getlist("files[]")
         if uploaded_files:
 
@@ -152,7 +154,7 @@ def order_create_view():
                     doctype.append(file.filename.split('.')[-1])
                     saveDir.append(f'{directory}/{file.filename}')
                             
-            resp = AdminQueryPost.create_orders(request.form, saveDir, doctype, directory, fileName)
+        resp = AdminQueryPost.create_orders(request.form, saveDir, doctype, directory, fileName, userId)
             
             # fileUpload(fileName, orderId, directory)
 
@@ -198,9 +200,47 @@ def get_all_order():
 @try_except
 def get_orders(id):
     data = AdminQueryGet.get_order(id)
-    googlefile = fileGet(data[0]['drive_folder_id'])
 
-    return jsonify(data = data[0], googlFiles = googlefile)
+    if data[0]['drive_folder_id']:
+        googlefile = fileGet(data[0]['drive_folder_id'])
+        return jsonify(data = data[0], googlFiles = googlefile)
+    else:
+        return jsonify(data = data[0])
+
+
+
+@superAdmin.route('/edit-order/<id>', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
+def edit_order(id):
+    if request.method == 'POST':
+        
+        fileName = []
+        doctype = []
+        saveDir = []
+
+        userId = request.headers['emp_id']
+
+        uploaded_files = request.files.getlist("files[]")
+        if uploaded_files:
+
+            directory = f'static/Files/ORDER# {id}'
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            
+            for file in uploaded_files:
+                if file.filename:    
+                    fileName.append(file.filename)
+                    file.save(os.path.join(directory, file.filename))
+                    doctype.append(file.filename.split('.')[-1])
+                    saveDir.append(f'{directory}/{file.filename}')
+                            
+        resp = AdminQueryUpdate.edit_order(request.form, saveDir, doctype, directory, fileName, id)
+
+
+        return jsonify({"message": resp})
+
 
 
 

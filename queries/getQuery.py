@@ -144,19 +144,22 @@ class Admin:
 
     def get_order(self,id):
         cursor = mysql.connection.cursor()
-        my_query = f"""SELECT order_id, order_title, order_date, order_status, order_complete, order_deadline, order_pageNo,
-        order_subjectArea, order_style, order_sourceNo, order_description, order_signature, order_detail.order_code, 
-        order_acadmicLevel, service_name, product_name, order_metadata, order_service_dev, order_product_dev, drive_folder_id,
+        my_query = f"""SELECT order_id, order_title, order_date, order_status, order_complete, order_deadline, order_pageNo, Price_order, currency,
+        order_subjectArea, order_style, order_sourceNo, order_description, order_signature, order_detail.order_code, role_name order_type,
+        order_acadmicLevel, service_name, product_name, document_path, order_metadata, order_service_dev, order_product_dev, drive_folder_id, chat_room_id,
         group_concat(employee_name) employee_name, group_concat(order_assign_status) order_assign_status,
         group_concat(order_emp_status) order_emp_status
         FROM order_detail INNER JOIN order_employee_association ON order_detail.order_id = order_employee_association.order_id_fk
         INNER JOIN employee_detail ON employee_detail.employee_id = order_employee_association.employee_id_fk
         LEFT JOIN service_table ON order_detail.order_service = service_table.service_id LEFT JOIN product_table ON
-        order_detail.order_product = product_table.product_id LEFT JOIN documents ON order_detail.order_id = documents.order_id_fk
-        WHERE order_id = {id} GROUP BY order_id;"""
+        order_detail.order_product = product_table.product_id LEFT JOIN documents ON order_detail.order_id = documents.order_id_fk 
+        INNER JOIN chat_table ON chat_table.chat_room_id = order_detail.order_chat_room INNER JOIN user_role ON user_role.role_id =
+        order_detail.order_type INNER JOIN order_price ON order_detail.order_id = order_price.order_id_fk
+        WHERE order_id = '{id}' GROUP BY order_id"""
         cursor.execute(my_query)
         return_data = cursor.fetchall()
         return return_data
+
 
     def get_all_order(self,limit,offset):
         cursor = mysql.connection.cursor()
@@ -165,7 +168,7 @@ class Admin:
         FROM order_detail INNER JOIN order_employee_association ON order_detail.order_id = order_employee_association.order_id_fk 
         INNER JOIN employee_detail ON employee_detail.employee_id = order_employee_association.employee_id_fk INNER JOIN
         order_price ON order_detail.order_id = order_price.order_id_fk
-        GROUP BY order_id LIMIT {limit} OFFSET {offset}"""
+        GROUP BY order_id ORDER BY order_id DESC LIMIT {limit} OFFSET {offset}"""
         cursor.execute(my_query)
         return_data = cursor.fetchall()
         return return_data
