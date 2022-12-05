@@ -20,8 +20,8 @@
 
 
     <script>
-        const socket = io.connect("http://127.0.0.1:5000/");
-        // const socket = io.connect("http://192.168.4.113:5000/");
+        // const socket = io.connect("http://127.0.0.1:5000/");
+        const socket = io.connect("http://192.168.4.113:5000/");
         socket.on('connect', function(){
             socket.emit('join_room',{
                 username: "{{ name }}",
@@ -51,13 +51,13 @@
             document.getElementById('messages').appendChild(newNode);
         });
 
-        socket.on('join_room_announcement', function(data){
-            console.log(data);
-            const newNode = document.createElement('div');
-            newNode.innerHTML = `${data.username} has Joined`;
-            document.getElementById('messages').appendChild(newNode);
+        // socket.on('join_room_announcement', function(data){
+        //     console.log(data);
+        //     const newNode = document.createElement('div');
+        //     newNode.innerHTML = `${data.username} has Joined`;
+        //     document.getElementById('messages').appendChild(newNode);
 
-        })
+        // })
 
 
 

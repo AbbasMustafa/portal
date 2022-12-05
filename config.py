@@ -9,7 +9,7 @@ load_dotenv(find_dotenv())
 app = Flask(__name__)
 cors = CORS(app)
 mysql = MySQL(app)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 app.config['MYSQL_USER'] = os.getenv('DB_USERNAME')
 app.config['MYSQL_PASSWORD'] = os.getenv('DB_PASSWORD')

@@ -200,12 +200,13 @@ def get_all_order():
 @try_except
 def get_orders(id):
     data = AdminQueryGet.get_order(id)
+    chat_data = AdminQueryGet.get_order_chat(id)
 
     if data[0]['drive_folder_id']:
         googlefile = fileGet(data[0]['drive_folder_id'])
-        return jsonify(data = data[0], googlFiles = googlefile)
+        return jsonify(data = data[0], googlFiles = googlefile, chat_data=chat_data)
     else:
-        return jsonify(data = data[0])
+        return jsonify(data = data[0], chat_data=chat_data)
 
 
 

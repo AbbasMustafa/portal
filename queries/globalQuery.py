@@ -21,3 +21,12 @@ def get_password(email):
     cursor.execute(my_query, data)
     return_data = cursor.fetchall()
     return return_data
+
+
+def save_chat(message, room_id, username, date, emp_id_fk):
+    cursor = mysql.connection.cursor()
+    my_query = """INSERT INTO chat_data (chat_message, chat_room_id_fk, chat_username, chat_date, employee_id_fk) VALUES(%s,%s,%s,%s,%s)"""
+    data = (message, room_id, username, date, emp_id_fk,)
+    cursor.execute(my_query, data)
+    mysql.connection.commit()
+    return "saved"
