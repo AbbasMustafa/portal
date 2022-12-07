@@ -74,8 +74,7 @@ class Admin:
 
 
     def edit_order(self, formData, saveDir, doctype, directory, fileName, id):
-        # try:
-
+        try:
             self.orderCode = formData['orderCode']
             self.saleAgent = formData['saleAgentsInput']
             self.orderTitle = formData['orderTitle']
@@ -196,10 +195,46 @@ class Admin:
             
             return "Order Updated"
 
-        # except Exception as e:
-        #     print(e)
-        #     return "error"
+        except Exception as e:
+            print(e)
+            return "error"
 
+
+    def add_recipients(self, formData):
+        try:
+            self.recipient = formData['recipient']
+            self.role = formData['role']
+            self.order_id = formData['orderId']
+            self.order_code = formData['orderCode']
+            self.room_id = formData['roomId']
+
+            if self.role == 'Developer' or self.role == 'Writer' or self.role == 'Freelancer':
+                assign_status = 'assign to'
+            else:
+                assign_status = 'assign by'
+
+            cursor = mysql.connection.cursor()
+
+            my_query = """INSERT INTO order_employee_association 
+            (order_id_fk, employee_id_fk, order_emp_status, order_code, order_assign_status) 
+            VALUES (%s,%s,%s,%s,%s)"""
+            data = (self.order_id, self.recipient, 'Active', self.order_code, assign_status,)
+            cursor.execute(my_query, data)
+            mysql.connection.commit()
+
+
+            my_query = """INSERT INTO chat_association_table (employee_id_fk, room_id_fk) VALUES(%s,%s)"""
+            data = (self.recipient, self.room_id,)
+            cursor.execute(my_query, data)
+            mysql.connection.commit()
+
+            return "Recipient Added"
+
+        except Exception as e:
+            print(e)
+            return "error"
+
+        
 
 
 

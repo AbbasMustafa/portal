@@ -243,7 +243,7 @@ class Hr:
 
             return "success"
 
-        except Exception:
+        except Exception as e:
             # print(Exception)
             return "error"
 

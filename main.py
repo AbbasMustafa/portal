@@ -10,7 +10,7 @@ from utils.redirectRouter import *
 from utils.google_drive import *
 from queries.globalQuery import *
 from chat.Chats import chat
-from flask_socketio import join_room
+# from flask_socketio import join_room
 
 # app = Flask(__name__)
 # baseUrl = "/api"
@@ -29,50 +29,58 @@ app.register_blueprint(chat, url_prefix = '/chat')
 @app.route('/login', methods=['GET','POST'])
 @try_except
 def login_view():
-    # if 'user_role' in session:
-    #     return route_to()
+    try:
+        # if 'user_role' in session:
+        #     return route_to()
 
-    # else:
-    if request.method == "POST":
-        
-        user_name = request.get_json()['username']
-        password = request.get_json()['pass']
-        # user_name = request.form['username']
-        # password = request.form['pass']
-
-        return_data = login_query(user_name, password)
-        if return_data:
-            session['allowed'] = return_data[0]['department_name']
-            session['user_role'] = return_data[0]['role_name']
-            session['emp_name'] = return_data[0]['employee_name']
-            session['designation'] = return_data[0]['designation']
-            session['emp_id'] = return_data[0]['employee_id_fk']
+        # else:
+        if request.method == "POST":
             
-            return jsonify(message = 'Login Success' , URL = return_data[0]['department_name'], 
-            name=return_data[0]['employee_name'], designation=return_data[0]['designation'], 
-            user_role=return_data[0]['role_name'], emp_id = return_data[0]['employee_id_fk'])
-            # session['allowed'] = ['Administration', 'Human Resource', 'Sales'
-            # return render_template('login.html')
+            user_name = request.get_json()['username']
+            password = request.get_json()['pass']
+            # user_name = request.form['username']
+            # password = request.form['pass']
 
-        else:
-            message = 'Wrong Credentials Or You have no acces to portal'
-            return jsonify(message=message, URL = '#')    
-    # else:
-    #     return render_template('login.html')
+            return_data = login_query(user_name, password)
+            if return_data:
+                # session['allowed'] = return_data[0]['department_name']
+                # session['user_role'] = return_data[0]['role_name']
+                # session['emp_name'] = return_data[0]['employee_name']
+                # session['designation'] = return_data[0]['designation']
+                # session['emp_id'] = return_data[0]['employee_id_fk']
+                
+                return jsonify(message = 'Login Success' , URL = return_data[0]['department_name'], 
+                name=return_data[0]['employee_name'], designation=return_data[0]['designation'], 
+                user_role=return_data[0]['role_name'], emp_id = return_data[0]['employee_id_fk'])
+                # session['allowed'] = ['Administration', 'Human Resource', 'Sales'
+                # return render_template('login.html')
+
+            else:
+                message = 'Wrong Credentials Or You have no acces to portal'
+                return jsonify(message=message, URL = '#')
+
+    except Exception as e:
+        print(e)
+        return jsonify({"message":"Something went wrong while logging in"})    
+
 
 
 @try_except
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password_view():
-    
-    if request.method == 'POST':
-        email = request.get_json()['email']
-        return_pass = get_password(email)
-        if return_pass:
-            return jsonify(message=f"Password Sent To {return_pass[0]['login_email']}")
+    try:
+        if request.method == 'POST':
+            email = request.get_json()['email']
+            return_pass = get_password(email)
+            if return_pass:
+                return jsonify(message=f"Password Sent To {return_pass[0]['login_email']}")
 
-        else:
-            return jsonify(message="No Email Found Or Your Are Ban")
+            else:
+                return jsonify(message="No Email Found Or Your Are Ban")
+    
+    except Exception as e:
+        print(e)
+        return jsonify({"message":"Something went wrong while recovering your password"})
 
 
 
@@ -81,9 +89,13 @@ def forgot_password_view():
 @login_required
 @try_except
 def logout_view():
-    # session.clear()
-    # print(request.headers.get('set-cookie'))
-    return jsonify(message = 'Logout successful')
+    try:
+        # session.clear()
+        # print(request.headers.get('set-cookie'))
+        return jsonify({"message":'Logout successful'})
+    except Exception as e:
+        print(e)
+        return jsonify({"message":'Something went wrong while logging out'})
 
 
 # ======================================================================================

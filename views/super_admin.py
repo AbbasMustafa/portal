@@ -244,6 +244,30 @@ def edit_order(id):
 
 
 
+@superAdmin.route('/order-recipients/<id>', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
+def order_recipients(id):
+
+    recipients = AdminQueryGet.get_recipients(id)
+    remove_recipients = AdminQueryGet.get_remove_recipient(id)
+
+    return jsonify(recipients=recipients, remove_recipients=remove_recipients)
+
+
+
+@superAdmin.route('/order-add-user', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
+def order_add_users():
+    if request.method == 'POST':
+        # message = AdminQueryUpdate.add_recipients(request.get_json())
+        print(request.get_json())
+
+        return jsonify({"message":"something"})
+        
 
 # @superAdmin.route('/add-department', methods=['GET', 'POST'])
 # @login_required
