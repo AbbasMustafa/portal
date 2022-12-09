@@ -227,13 +227,13 @@ class Admin:
             cursor = mysql.connection.cursor()
             my_query = f"""SELECT order_id, order_title, order_date, order_status, order_complete, order_deadline, order_pageNo, Price_order, currency,
             order_subjectArea, order_style, order_sourceNo, order_description, order_signature, order_detail.order_code, role_name order_type,
-            order_acadmicLevel, service_name, product_name, document_path, order_metadata, order_service_dev, order_product_dev, drive_folder_id, chat_room_id, 
+            order_acadmicLevel, service_name, product_name, order_metadata, order_service_dev, order_product_dev, chat_room_id, 
             group_concat(employee_name) employee_name, group_concat(order_assign_status) order_assign_status,
             group_concat(order_emp_status) order_emp_status
             FROM order_detail INNER JOIN order_employee_association ON order_detail.order_id = order_employee_association.order_id_fk
             INNER JOIN employee_detail ON employee_detail.employee_id = order_employee_association.employee_id_fk
             LEFT JOIN service_table ON order_detail.order_service = service_table.service_id LEFT JOIN product_table ON
-            order_detail.order_product = product_table.product_id LEFT JOIN documents ON order_detail.order_id = documents.order_id_fk 
+            order_detail.order_product = product_table.product_id 
             INNER JOIN chat_table ON chat_table.chat_room_id = order_detail.order_chat_room INNER JOIN user_role ON user_role.role_id =
             order_detail.order_type LEFT JOIN order_price ON order_detail.order_id = order_price.order_id_fk
             WHERE order_id = '{id}' GROUP BY order_id"""
@@ -244,14 +244,26 @@ class Admin:
             print(e)
             return "Cannot get order"
 
+    
+    def get_order_doc(self, id):
+        try:
+            cursor = mysql.connection.cursor()
+            my_query = f"""SELECT document_path, drive_folder_id from documents WHERE order_id_fk = {id}"""
+            cursor.execute(my_query)
+            return_data = cursor.fetchall()
+            return return_data
+        except Exception as e:
+            print(e)
+            return "Cannot get order document"
 
-    def get_order_chat(self,id):
+
+    def get_order_chat(self, id, offset):
         try:  
             cursor = mysql.connection.cursor()
             my_query = f"""SELECT chat_message, chat_room_id_fk, chat_username, chat_date, employee_id_fk FROM chat_data
             INNER JOIN chat_table ON chat_table.chat_room_id = chat_data.chat_room_id_fk INNER JOIN 
             order_detail ON order_detail.order_chat_room = chat_table.chat_room_id WHERE
-            order_detail.order_id = '{id}' """
+            order_detail.order_id = '{id}' ORDER BY (chat_data_id) DESC LIMIT 100 OFFSET {offset} """
             cursor.execute(my_query)
             return_data = cursor.fetchall()
             return return_data
@@ -297,14 +309,13 @@ class Admin:
     def get_remove_recipient(self, id):
         try:
             cursor = mysql.connection.cursor()
-            my_query = """SELECT employee_id, employee_name, role_name, department_name FROM employee_detail 
-            INNER JOIN user_role ON employee_detail.employee_role_id = user_role.role_id LEFT JOIN department ON 
-            employee_detail.employee_department_id = department.department_id WHERE employee_id 
-            IN(SELECT employee_id_fk FROM order_employee_association INNER JOIN
-            order_detail ON order_detail.order_id = order_employee_association.order_id_fk LEFT JOIN manager_table ON 
-            manager_table.manager_emp_id = employee_detail.employee_id
-            WHERE order_detail.order_id = 38 AND (user_role.role_name != 'Admin') AND 
-            (employee_id NOT IN(manager_table.manager_emp_id)));"""
+            my_query = f"""SELECT employee_id, employee_name, role_name, department_name FROM employee_detail 
+            INNER JOIN user_role ON employee_detail.employee_role_id = user_role.role_id 
+            LEFT JOIN department ON employee_detail.employee_department_id = department.department_id 
+            INNER JOIN order_employee_association ON employee_detail.employee_id=order_employee_association.employee_id_fk 
+            LEFT JOIN manager_table ON employee_detail.employee_id = manager_table.manager_emp_id
+            WHERE order_employee_association.order_id_fk = '{id}' AND user_role.role_name != 'Admin' AND employee_detail.employee_id 
+            != COALESCE(manager_table.manager_emp_id,0)"""
             cursor.execute(my_query)
             return_data = cursor.fetchall()
             return return_data

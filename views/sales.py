@@ -106,22 +106,35 @@ def get_all_order():
 @try_except
 def get_orders(id):
     data = SaleQueryGet.get_order(id)
-    chat_data = SaleQueryGet.get_order_chat(id)
+    # chat_data = SaleQueryGet.get_order_chat(id)
 
     if data[0]['drive_folder_id']:
         googlefile = fileGet(data[0]['drive_folder_id'])
-        return jsonify(data = data[0], googlFiles = googlefile, chat_data=chat_data)
+        return jsonify(data = data[0], googlFiles = googlefile)
     else:
-        return jsonify(data = data[0], chat_data=chat_data)
+        return jsonify(data = data[0])
 
 
 
-@sale.route('/edit-order/<id>', methods=['GET', 'POST'])
+@sale.route('/get-order-chat/<id>', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Sales'])
+@try_except
+def get_orders_chat(id):
+
+    offset = request.args.get('offset')
+    chat_data = SaleQueryGet.get_order_chat(id, offset)
+
+    return jsonify(chat_data = chat_data)
+
+
+
+@sale.route('/edit-order/<id>', methods=['GET', 'POST', 'PUT'])
 @login_required
 @authorize(my_roles=['Sales'])
 @try_except
 def edit_order(id):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         
         fileName = []
         doctype = []

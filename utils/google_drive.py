@@ -196,7 +196,7 @@ def fileGet(folderId):
         # Call the Drive v3 API
         results = service.files().list(q=f" '{folderId}' in parents and trashed = false",
                                             spaces='drive',
-            pageSize=10, fields="nextPageToken, files(*)").execute()
+        fields="nextPageToken, files(*)").execute()
         items = results.get('files', [])
 
         if not items:

@@ -57,12 +57,12 @@ def list_user_view():
 
 
 
-@hr.route('/edit-user/<id>', methods=['GET', 'POST'])
+@hr.route('/edit-user/<id>', methods=['GET', 'POST', 'PUT'])
 @login_required
 @authorize(my_roles=['Human Resource'])
 @try_except
 def edit_user_view(id):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         message = HrQueryUpdate.edit_user(request.get_json(), id)
         return jsonify({'message': message}) 
         
@@ -74,12 +74,12 @@ def edit_user_view(id):
         return jsonify({'resp_user_detail':user_details, 'dept':resp_department, 'manager':resp_manager, 'role':resp_Role})
 
 
-@hr.route('/delete-user', methods=['GET', 'POST'])
+@hr.route('/delete-user', methods=['GET', 'POST', 'DELETE'])
 @login_required
 @authorize(my_roles=['Human Resource'])
 @try_except
 def delete_user_view():
-    if request.method =='POST':
+    if request.method =='DELETE':
 
         id = request.get_json()['userId']
         active = request.get_json()['active']

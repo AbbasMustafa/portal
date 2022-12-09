@@ -59,12 +59,12 @@ def list_user_view():
 
 
 
-@superAdmin.route('/delete-user', methods=['GET', 'POST'])
+@superAdmin.route('/delete-user', methods=['GET', 'POST', 'DELETE'])
 @login_required
 @authorize(my_roles=['Administration'])
 @try_except
 def delete_user_view():
-    if request.method =='POST':
+    if request.method =='DELETE':
 
         id = request.get_json()['userId']
         active = request.get_json()['active']
@@ -75,12 +75,12 @@ def delete_user_view():
 
 
 
-@superAdmin.route('/edit-user/<id>', methods=['GET', 'POST'])
+@superAdmin.route('/edit-user/<id>', methods=['GET', 'POST', 'PUT'])
 @login_required
 @authorize(my_roles=['Administration'])
 @try_except
 def edit_user_view(id):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         
         message = AdminQueryUpdate.edit_user(request.get_json(), id)
         return jsonify({'message': message})
@@ -200,22 +200,35 @@ def get_all_order():
 @try_except
 def get_orders(id):
     data = AdminQueryGet.get_order(id)
-    chat_data = AdminQueryGet.get_order_chat(id)
+    doc_data = AdminQueryGet.get_order_doc(id)
 
-    if data[0]['drive_folder_id']:
-        googlefile = fileGet(data[0]['drive_folder_id'])
-        return jsonify(data = data[0], googlFiles = googlefile, chat_data=chat_data)
+    if doc_data[0]['drive_folder_id']:
+        googlefile = fileGet(doc_data[0]['drive_folder_id'])
+        return jsonify(data = data[0], googlFiles = googlefile, doc_data=doc_data[0])
     else:
-        return jsonify(data = data[0], chat_data=chat_data)
+        return jsonify(data = data[0])
 
 
 
-@superAdmin.route('/edit-order/<id>', methods=['GET', 'POST'])
+@superAdmin.route('/get-order-chat/<id>', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
+def get_orders_chat(id):
+
+    offset = request.args.get('offset')
+    chat_data = AdminQueryGet.get_order_chat(id, offset)
+
+    return jsonify(chat_data = chat_data)
+
+
+
+@superAdmin.route('/edit-order/<id>', methods=['GET', 'POST', 'PUT'])
 @login_required
 @authorize(my_roles=['Administration'])
 @try_except
 def edit_order(id):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         
         fileName = []
         doctype = []
@@ -244,9 +257,45 @@ def edit_order(id):
 
 
 
+@superAdmin.route('/update-file', methods=['GET', 'POST', 'PUT'])
+@login_required
+@authorize(my_roles=['Administration','Sales', 'Production'])
+@try_except
+def add_file():
+
+    if request.method == 'PUT':
+
+        fileName = []
+        doctype = []
+        saveDir = []
+
+        orderId = request.form['orderId']
+        folder_id = request.form['folder_id']
+       
+
+        uploaded_files = request.files.getlist("files[]")
+        if uploaded_files:
+
+            directory = f'static/Files/ORDER# {orderId}'
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            
+            for file in uploaded_files:
+                if file.filename:    
+                    fileName.append(file.filename)
+                    file.save(os.path.join(directory, file.filename))
+                    doctype.append(file.filename.split('.')[-1])
+                    saveDir.append(f'{directory}/{file.filename}')
+
+        message = AdminQueryUpdate.update_file(saveDir, doctype, directory, fileName, orderId, folder_id)
+
+        return jsonify({"message":message})
+
+
+
 @superAdmin.route('/order-recipients/<id>', methods=['GET', 'POST'])
 @login_required
-@authorize(my_roles=['Administration'])
+@authorize(my_roles=['Administration','Sales', 'Production'])
 @try_except
 def order_recipients(id):
 
@@ -257,17 +306,61 @@ def order_recipients(id):
 
 
 
-@superAdmin.route('/order-add-user', methods=['GET', 'POST'])
+@superAdmin.route('/order-add-user', methods=['GET', 'POST', 'PUT'])
 @login_required
-@authorize(my_roles=['Administration'])
+@authorize(my_roles=['Administration', 'Sales', 'Production'])
 @try_except
 def order_add_users():
-    if request.method == 'POST':
-        # message = AdminQueryUpdate.add_recipients(request.get_json())
-        print(request.get_json())
-
-        return jsonify({"message":"something"})
+    if request.method == 'PUT':
         
+        message = AdminQueryUpdate.add_recipients(request.get_json())
+        
+        return jsonify({"message":message})
+        
+
+
+
+@superAdmin.route('/order-delete-user', methods=['GET', 'POST', 'DELETE'])
+@login_required
+@authorize(my_roles=['Administration', 'Sales', 'Production'])
+@try_except
+def delete_recipient():
+    if request.method == 'DELETE':
+        
+        message = AdminQueryDelete.delete_order_recipients(request.get_json())
+
+    return jsonify({"message":message})
+
+
+
+@superAdmin.route('/change-order-status', methods=['GET', 'POST', 'PUT'])
+@login_required
+@authorize(my_roles=['Administration', 'Sales'])
+@try_except
+def change_order_status():
+
+    if request.method == 'PUT':
+
+        # print(request.get_json())
+        message = AdminQueryUpdate.update_order_status(request.get_json())
+
+        return jsonify({"message":message})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # @superAdmin.route('/add-department', methods=['GET', 'POST'])
 # @login_required

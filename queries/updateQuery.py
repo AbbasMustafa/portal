@@ -202,7 +202,7 @@ class Admin:
 
     def add_recipients(self, formData):
         try:
-            self.recipient = formData['recipient']
+            self.recipient = formData['recipients']
             self.role = formData['role']
             self.order_id = formData['orderId']
             self.order_code = formData['orderCode']
@@ -234,7 +234,62 @@ class Admin:
             print(e)
             return "error"
 
+
+    def update_order_status(self,formData):
         
+        try:
+            self.order_id = formData['orderId']
+            self.status = formData['status']
+            
+            cursor = mysql.connection.cursor()
+
+            my_query = f"""UPDATE order_detail SET order_status='{self.status}' WHERE order_id = '{self.order_id}' """
+            cursor.execute(my_query)
+            mysql.connection.commit()
+
+            return self.status
+
+        except Exception as e:
+            print(e)
+            return "Cannot change status"
+
+
+
+    def update_file(self, saveDir, doctype, directory, fileName, orderId, folder_id):
+
+        try:
+
+            if len(fileName) > 0:
+
+                cursor = mysql.connection.cursor()
+
+                if folder_id != "":
+
+                    googleDoc = fileUpdate(fileName, folder_id, directory)
+                    # print(saveDir, id, doctype, googleDoc, googleDoc)
+                    for i in range(len(doctype)):
+                        my_query = """INSERT INTO documents (document_path, order_id_fk, document_type, drive_folder_id, drive_file_id, order_code) VALUES(%s,%s,%s,%s,%s,%s)"""
+                        data = (saveDir[i], orderId, doctype[i], googleDoc[0], googleDoc[1][i], f"ORDER# {orderId}",)
+                        cursor.execute(my_query, data)
+                        mysql.connection.commit()
+
+                    return ["File added", googleDoc[1]]
+
+                else:
+
+                    googleDoc = fileUpload(fileName, orderId, directory)
+                
+                    for i in range(len(doctype)):
+                        my_query = """INSERT INTO documents (document_path, order_id_fk, document_type, drive_folder_id, drive_file_id, order_code) VALUES(%s,%s,%s,%s,%s,%s)"""
+                        data = (saveDir[i], orderId, doctype[i], googleDoc[0], googleDoc[1][i], f"ORDER# {orderId}",)
+                        cursor.execute(my_query, data)
+                        mysql.connection.commit()
+
+                    return ["File added", googleDoc[1]]
+
+        except Exception as e:
+            print(e)
+            return "Error uploading file"
 
 
 
