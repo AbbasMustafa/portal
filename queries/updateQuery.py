@@ -201,6 +201,7 @@ class Admin:
 
 
     def add_recipients(self, formData):
+
         try:
             self.recipient = formData['recipients']
             self.role = formData['role']
@@ -338,13 +339,13 @@ class Hr:
             return "error"
 
 
-class Sales:
+class Sales (Admin):
     
     def update(self):
         pass
 
 
-class Production:
+class Production (Admin):
 
     def update(self):
         pass

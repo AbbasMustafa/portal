@@ -95,7 +95,10 @@ def order_create_view():
 def get_all_order():
     limit = int(request.args.get('rangeEnd'))
     offset = int(request.args.get('rangeStart'))
-    data = SaleQueryGet.get_all_order(limit, offset)
+    emp_id = request.args.get('empId')
+    status = request.args.get('status')
+
+    data = SaleQueryGet.get_all_order(limit, offset, emp_id, status)
     return jsonify(data = data)
 
 
@@ -106,11 +109,11 @@ def get_all_order():
 @try_except
 def get_orders(id):
     data = SaleQueryGet.get_order(id)
-    # chat_data = SaleQueryGet.get_order_chat(id)
+    doc_data = SaleQueryGet.get_order_doc(id)
 
-    if data[0]['drive_folder_id']:
-        googlefile = fileGet(data[0]['drive_folder_id'])
-        return jsonify(data = data[0], googlFiles = googlefile)
+    if doc_data:
+        googlefile = fileGet(doc_data[0]['drive_folder_id'])
+        return jsonify(data = data[0], googlFiles = googlefile, doc_data=doc_data[0])
     else:
         return jsonify(data = data[0])
 
@@ -160,3 +163,110 @@ def edit_order(id):
 
 
         return jsonify({"message": resp})
+
+
+
+@sale.route('/update-file', methods=['GET', 'POST', 'PUT'])
+@login_required
+@authorize(my_roles=['Sales'])
+@try_except
+def add_file():
+
+    if request.method == 'PUT':
+
+        fileName = []
+        doctype = []
+        saveDir = []
+
+        orderId = request.form['orderId']
+        folder_id = request.form['folder_id']
+       
+
+        uploaded_files = request.files.getlist("files[]")
+        if uploaded_files:
+
+            directory = f'static/Files/ORDER# {orderId}'
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            
+            for file in uploaded_files:
+                if file.filename:    
+                    fileName.append(file.filename)
+                    file.save(os.path.join(directory, file.filename))
+                    doctype.append(file.filename.split('.')[-1])
+                    saveDir.append(f'{directory}/{file.filename}')
+
+        message = SaleQueryUpdate.update_file(saveDir, doctype, directory, fileName, orderId, folder_id)
+
+        return jsonify({"message":message})
+
+
+
+@sale.route('/order-recipients/<id>', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Sales'])
+@try_except
+def order_recipients(id):
+
+    recipients = SaleQueryGet.get_recipients(id)
+    remove_recipients = SaleQueryGet.get_remove_recipient(id)
+
+    return jsonify(recipients=recipients, remove_recipients=remove_recipients)
+
+
+
+@sale.route('/order-add-user', methods=['GET', 'POST', 'PUT'])
+@login_required
+@authorize(my_roles=['Sales'])
+@try_except
+def order_add_users():
+    if request.method == 'PUT':
+
+        message = SaleQueryUpdate.add_recipients(request.get_json())
+        
+        return jsonify({"message":message})
+        
+
+
+
+@sale.route('/order-delete-user', methods=['GET', 'POST', 'DELETE'])
+@login_required
+@authorize(my_roles=['Sales'])
+@try_except
+def delete_recipient():
+    if request.method == 'DELETE':
+        
+        message = SaleQueryDelete.delete_order_recipients(request.get_json())
+
+    return jsonify({"message":message})    
+
+
+
+@sale.route('/change-order-status', methods=['GET', 'POST', 'PUT'])
+@login_required
+@authorize(my_roles=['Sales'])
+@try_except
+def change_order_status():
+
+    if request.method == 'PUT':
+
+        # print(request.get_json())
+        message = SaleQueryUpdate.update_order_status(request.get_json())
+
+        return jsonify({"message":message})
+
+
+
+@sale.route('/order-status', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Sales'])
+def order_status():
+    
+    id = request.args.get('userId')
+    status = request.args.get('status')
+    limit = int(request.args.get('rangeEnd'))
+    offset = int(request.args.get('rangeStart'))
+
+    message = SaleQueryGet.status_order(id, status, limit, offset)
+
+    return jsonify({"message":message})

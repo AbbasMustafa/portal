@@ -174,13 +174,6 @@ def order_create_view():
         return jsonify({"sale":saleAgent, "production":productionPerson, "service":service, "product":product, "orderId":orderId})
 
 
-@superAdmin.route('/order', methods=['GET', 'POST'])
-@login_required
-@authorize(my_roles=['Administration'])
-@try_except
-def orders():
-    return render_template('superAdmin/all-order.html')
-
 
 
 @superAdmin.route('/all-order', methods=['GET', 'POST'])
@@ -190,8 +183,12 @@ def orders():
 def get_all_order():
     limit = int(request.args.get('rangeEnd'))
     offset = int(request.args.get('rangeStart'))
-    data = AdminQueryGet.get_all_order(limit, offset)
+    emp_id = request.args.get('empId')
+    status = request.args.get('status')
+    
+    data = AdminQueryGet.get_all_order(limit, offset, emp_id, status)
     return jsonify(data = data)
+
 
 
 @superAdmin.route('/get-order/<id>', methods=['GET', 'POST'])
@@ -202,7 +199,7 @@ def get_orders(id):
     data = AdminQueryGet.get_order(id)
     doc_data = AdminQueryGet.get_order_doc(id)
 
-    if doc_data[0]['drive_folder_id']:
+    if doc_data:
         googlefile = fileGet(doc_data[0]['drive_folder_id'])
         return jsonify(data = data[0], googlFiles = googlefile, doc_data=doc_data[0])
     else:
@@ -259,7 +256,7 @@ def edit_order(id):
 
 @superAdmin.route('/update-file', methods=['GET', 'POST', 'PUT'])
 @login_required
-@authorize(my_roles=['Administration','Sales', 'Production'])
+@authorize(my_roles=['Administration'])
 @try_except
 def add_file():
 
@@ -295,7 +292,7 @@ def add_file():
 
 @superAdmin.route('/order-recipients/<id>', methods=['GET', 'POST'])
 @login_required
-@authorize(my_roles=['Administration','Sales', 'Production'])
+@authorize(my_roles=['Administration'])
 @try_except
 def order_recipients(id):
 
@@ -308,7 +305,7 @@ def order_recipients(id):
 
 @superAdmin.route('/order-add-user', methods=['GET', 'POST', 'PUT'])
 @login_required
-@authorize(my_roles=['Administration', 'Sales', 'Production'])
+@authorize(my_roles=['Administration'])
 @try_except
 def order_add_users():
     if request.method == 'PUT':
@@ -322,7 +319,7 @@ def order_add_users():
 
 @superAdmin.route('/order-delete-user', methods=['GET', 'POST', 'DELETE'])
 @login_required
-@authorize(my_roles=['Administration', 'Sales', 'Production'])
+@authorize(my_roles=['Administration'])
 @try_except
 def delete_recipient():
     if request.method == 'DELETE':
@@ -335,7 +332,7 @@ def delete_recipient():
 
 @superAdmin.route('/change-order-status', methods=['GET', 'POST', 'PUT'])
 @login_required
-@authorize(my_roles=['Administration', 'Sales'])
+@authorize(my_roles=['Administration'])
 @try_except
 def change_order_status():
 
@@ -348,6 +345,21 @@ def change_order_status():
 
 
 
+@superAdmin.route('/order-stats', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Administration', 'Sales', 'Production'])
+@try_except
+def get_order_stats():
+
+    id = request.args.get('empId')
+    message = AdminQueryGet.order_stats(id)
+
+    return jsonify({"completed":message[0][0]['COUNT(order_id)'], "cancelled":message[1][0]['COUNT(order_id)'], 
+    "revision":message[2][0]['COUNT(order_id)'], "hold":message[3][0]['COUNT(order_id)'], 
+    "progress":message[4][0]['COUNT(order_id)'], "total":message[5][0]['COUNT(order_id)'],
+    "developer-monthly":message[6][0]['COUNT(order_id)'], "writer-monthly":message[7][0]['COUNT(order_id)'],
+    "developer-weekly":message[8][0]['COUNT(order_id)'], "writer-weekly":message[9][0]['COUNT(order_id)'],
+    "developer-daily":message[10][0]['COUNT(order_id)'],"writer-daily":message[11][0]['COUNT(order_id)']})
 
 
 

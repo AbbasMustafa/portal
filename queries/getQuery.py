@@ -272,15 +272,38 @@ class Admin:
             return "Cannot get order chat"
 
 
-    def get_all_order(self,limit,offset):
+    def get_all_order(self,limit,offset, emp_id, status):
         try:
             cursor = mysql.connection.cursor()
-            my_query = f"""SELECT order_id , order_detail.order_code, order_status, order_title, order_deadline, group_concat(employee_name) employee_name, 
-            group_concat(order_assign_status) order_assign, Price_order, currency
-            FROM order_detail INNER JOIN order_employee_association ON order_detail.order_id = order_employee_association.order_id_fk 
-            INNER JOIN employee_detail ON employee_detail.employee_id = order_employee_association.employee_id_fk INNER JOIN
-            order_price ON order_detail.order_id = order_price.order_id_fk
-            GROUP BY order_id ORDER BY order_id DESC LIMIT {limit} OFFSET {offset}"""
+            # my_query = f"""SELECT order_id , order_detail.order_code, order_status, order_title, order_deadline, group_concat(employee_name) employee_name, 
+            # group_concat(order_assign_status) order_assign, Price_order, currency
+            # FROM order_detail INNER JOIN order_employee_association ON order_detail.order_id = order_employee_association.order_id_fk 
+            # INNER JOIN employee_detail ON employee_detail.employee_id = order_employee_association.employee_id_fk INNER JOIN
+            # order_price ON order_detail.order_id = order_price.order_id_fk
+            # GROUP BY order_id ORDER BY order_id DESC LIMIT {limit} OFFSET {offset}"""
+
+            if not status:
+
+                my_query = f"""SELECT order_id , order_detail.order_code, order_status, order_title, order_deadline, group_concat(employee_name) employee_name, 
+                group_concat(order_assign_status) order_assign, Price_order, currency FROM employee_detail INNER JOIN order_employee_association ON
+                employee_detail.employee_id = order_employee_association.employee_id_fk INNER JOIN order_detail ON order_detail.order_id = 
+                order_employee_association.order_id_fk INNER JOIN order_price ON order_price.order_id_fk = order_detail.order_id
+                WHERE order_employee_association.order_id_fk in (SELECT order_id From order_detail INNER JOIN order_employee_association ON 
+                order_detail.order_id = order_employee_association.order_id_fk
+                WHERE order_employee_association.employee_id_fk = {emp_id}) GROUP BY order_id
+                ORDER BY order_id DESC LIMIT {limit} OFFSET {offset}"""
+
+            else:
+
+                my_query = f""" SELECT order_id , order_detail.order_code, order_status, order_title, order_deadline, group_concat(employee_name) employee_name, 
+                group_concat(order_assign_status) order_assign, Price_order, currency FROM employee_detail INNER JOIN order_employee_association ON
+                employee_detail.employee_id = order_employee_association.employee_id_fk INNER JOIN order_detail ON order_detail.order_id = 
+                order_employee_association.order_id_fk INNER JOIN order_price ON order_price.order_id_fk = order_detail.order_id
+                WHERE order_employee_association.order_id_fk in (SELECT order_id From order_detail INNER JOIN order_employee_association ON 
+                order_detail.order_id = order_employee_association.order_id_fk
+                WHERE order_employee_association.employee_id_fk = '{emp_id}') AND order_detail.order_status = '{status}' GROUP BY order_id
+                ORDER BY order_id DESC LIMIT {limit} OFFSET {offset} """
+
             cursor.execute(my_query)
             return_data = cursor.fetchall()
             return return_data
@@ -322,6 +345,105 @@ class Admin:
         except Exception as e:
             print(e)
             return "Cannot get remove recipients"
+
+
+    def order_stats(self, id):
+        try:
+            cursor = mysql.connection.cursor()
+            my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE order_status = 'completed' AND order_employee_association.employee_id_fk = '{id}'  """
+            cursor.execute(my_query)
+            completed = cursor.fetchall()
+            
+            my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE order_status = 'cancelled' AND order_employee_association.employee_id_fk = '{id}'  """
+            cursor.execute(my_query)
+            cancelled = cursor.fetchall()
+
+            my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE order_status = 'revision' AND order_employee_association.employee_id_fk = '{id}'  """
+            cursor.execute(my_query)
+            revision = cursor.fetchall()
+            
+            my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE order_status = 'hold' AND order_employee_association.employee_id_fk = '{id}'  """
+            cursor.execute(my_query)
+            hold = cursor.fetchall()
+
+            my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE order_status = 'progress' AND order_employee_association.employee_id_fk = '{id}'  """
+            cursor.execute(my_query)
+            progress = cursor.fetchall()
+
+            my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE order_status != 'pre-order' AND order_employee_association.employee_id_fk = '{id}'  """
+            cursor.execute(my_query)
+            total = cursor.fetchall()
+
+            my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE  MONTH(CURRENT_DATE()) 
+            AND order_status != 'pre-order' AND order_type = 4 AND order_employee_association.employee_id_fk = '{id}'  """
+            cursor.execute(my_query)
+            developer_monthly = cursor.fetchall()
+
+            my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE  MONTH(CURRENT_DATE()) 
+            AND order_status != 'pre-order' AND order_type = 5 AND order_employee_association.employee_id_fk = '{id}'  """
+            cursor.execute(my_query)
+            writer_monthly = cursor.fetchall()
+
+            my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE  WEEK(CURRENT_DATE()) 
+            AND order_status != 'pre-order' AND order_type = 4 AND order_employee_association.employee_id_fk = '{id}'  """
+            cursor.execute(my_query)
+            developer_weekly = cursor.fetchall()
+
+            my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE  WEEK(CURRENT_DATE()) 
+            AND order_status != 'pre-order' AND order_type = 5 AND order_employee_association.employee_id_fk = '{id}'  """
+            cursor.execute(my_query)
+            writer_weekly = cursor.fetchall()
+
+            my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE DATE(order_date) = CURDATE()
+            AND order_status != 'pre-order' AND order_type = 4 AND order_employee_association.employee_id_fk = '{id}' """
+            cursor.execute(my_query)
+            developer_daily = cursor.fetchall()
+
+            my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE DATE(order_date) = CURDATE()
+            AND order_status != 'pre-order' AND order_type = 5 AND order_employee_association.employee_id_fk = '{id}' """
+            cursor.execute(my_query)
+            writer_daily = cursor.fetchall()
+
+            return [completed, cancelled, revision, hold, progress, total, developer_monthly, writer_monthly,
+            developer_weekly, writer_weekly, developer_daily, writer_daily]
+
+        except Exception as e:
+            print(e)
+            return "Cannot get fetch stats"
+
+
+    def status_order(self, id, status, limit, offset):
+
+        try:
+            cursor = mysql.connection.cursor()
+            my_query = f"""SELECT order_id , order_detail.order_code, order_status, order_title, order_deadline, group_concat(employee_name) employee_name, 
+            group_concat(order_assign_status) order_assign, Price_order, currency FROM employee_detail INNER JOIN order_employee_association ON
+            employee_detail.employee_id = order_employee_association.employee_id_fk INNER JOIN order_detail ON order_detail.order_id = 
+            order_employee_association.order_id_fk INNER JOIN order_price ON order_price.order_id_fk = order_detail.order_id
+            WHERE order_employee_association.order_id_fk in (SELECT order_id From order_detail INNER JOIN order_employee_association ON 
+            order_detail.order_id = order_employee_association.order_id_fk
+            WHERE order_employee_association.employee_id_fk = '{id}') AND order_detail.order_status = {status} GROUP BY order_id
+            ORDER BY order_id DESC LIMIT {limit} OFFSET {offset} """
+            cursor.execute(my_query)
+            return_data = cursor.fetchall()
+            return return_data
+
+        except Exception as e:
+            print(e)
+            return "Cannot fetch orders"
+
 
 
 class Hr (Admin):
@@ -374,7 +496,7 @@ class Sales (Admin):
         pass
 
 
-class Production:
+class Production (Admin):
 
     def get(self):
         pass

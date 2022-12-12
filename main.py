@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request, session, url_for, redirect, make_response
+from flask import Flask, jsonify, request
 from config import *
 from views.super_admin import superAdmin
 from views.hr import hr
@@ -20,7 +20,7 @@ app.register_blueprint(superAdmin, url_prefix = '/admin')
 app.register_blueprint(hr, url_prefix = '/hr')
 app.register_blueprint(sale, url_prefix = '/sale')
 # app.register_blueprint(writer, url_prefix = '/writer')
-app.register_blueprint(production, url_prefix = '/developer')
+app.register_blueprint(production, url_prefix = '/production')
 app.register_blueprint(chat, url_prefix = '/chat')
 
 
@@ -38,23 +38,20 @@ def login_view():
             
             user_name = request.get_json()['username']
             password = request.get_json()['pass']
-            # user_name = request.form['username']
-            # password = request.form['pass']
 
             return_data = login_query(user_name, password)
             if return_data:
-                # session['allowed'] = return_data[0]['department_name']
-                # session['user_role'] = return_data[0]['role_name']
-                # session['emp_name'] = return_data[0]['employee_name']
-                # session['designation'] = return_data[0]['designation']
-                # session['emp_id'] = return_data[0]['employee_id_fk']
+
+                if not return_data[0]['manager_emp_id']:
+                    is_manager = 'false'
+                else: 
+                    is_manager = 'true'
                 
                 return jsonify(message = 'Login Success' , URL = return_data[0]['department_name'], 
                 name=return_data[0]['employee_name'], designation=return_data[0]['designation'], 
-                user_role=return_data[0]['role_name'], emp_id = return_data[0]['employee_id_fk'])
-                # session['allowed'] = ['Administration', 'Human Resource', 'Sales'
-                # return render_template('login.html')
-
+                user_role=return_data[0]['role_name'], emp_id = return_data[0]['employee_id_fk'],
+                is_manager=is_manager)
+                
             else:
                 message = 'Wrong Credentials Or You have no acces to portal'
                 return jsonify(message=message, URL = '#')

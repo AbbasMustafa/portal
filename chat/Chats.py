@@ -7,6 +7,20 @@ from queries.globalQuery import *
 chat = Blueprint("chat", __name__)
 
 
+@chat.route('/single-chat', methods=['GET', 'POST'])
+def create_chat():
+    if request.method == 'POST':
+        users = request.get_json()['userId']
+        empId = request.get_json()['empId']
+        
+        message = create_single_chat(users, empId)
+
+        return jsonify({"message":message})
+
+    # else:
+
+
+
 
 @socketio.on('join_room')
 def handle_join_room_event(data):
