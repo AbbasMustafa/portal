@@ -338,7 +338,6 @@ def change_order_status():
 
     if request.method == 'PUT':
 
-        # print(request.get_json())
         message = AdminQueryUpdate.update_order_status(request.get_json())
 
         return jsonify({"message":message})
@@ -363,8 +362,31 @@ def get_order_stats():
 
 
 
+@superAdmin.route('/get-single-chat/<roomId>', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
+def get_single_chat_data(roomId):
+
+    offset = request.args.get('offset')
+    chat_data = AdminQueryGet.single_chat(roomId, offset)
+
+    return jsonify(chat_data = chat_data)
 
 
+
+@superAdmin.route('/single-chat', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
+def create_chat():
+    if request.method == 'POST':
+        users = request.get_json()['userId']
+        empId = request.get_json()['empId']
+        
+        message = AdminQueryPost.create_single_chat(users, empId)
+
+        return jsonify({"message":message})
 
 
 

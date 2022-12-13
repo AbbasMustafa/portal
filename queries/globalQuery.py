@@ -46,36 +46,39 @@ def save_chat(message, room_id, username, date, emp_id_fk):
         return "Error while saving chat"
 
 
-def create_single_chat(user, empId):
-    try:
-        cursor = mysql.connection.cursor()
+# def create_single_chat(user, empId):
+#     try:
+#         cursor = mysql.connection.cursor()
 
-        my_query = """SELECT chat_room_id FROM chat_table INNER JOIN chat_association_table ON 
-        chat_table.chat_room_id = chat_association_table.room_id_fk
-        WHERE chat_table.created_by =%s AND chat_association_table.employee_id_fk =%s"""
-        data=(user, id_date,)
-        cursor.execute(my_query)
-        is_exsist = cursor.fetchall()
+#         my_query = """SELECT chat_room_id FROM chat_table INNER JOIN chat_association_table ON 
+#         chat_table.chat_room_id = chat_association_table.room_id_fk
+#         WHERE chat_table.created_by =%s AND chat_association_table.employee_id_fk =%s"""
+#         data=(user, id_date,)
+#         cursor.execute(my_query)
+#         is_exsist = cursor.fetchall()
 
-        if not is_exsist:
+#         if not is_exsist:
 
-            my_query = """INSERT INTO chat_table (created_by, created_at) VALUES (%s,%s)"""
-            id_date = datetime.now()
-            data = (user, id_date,)
-            cursor.execute(my_query, data)
-            mysql.connection.commit()
+#             my_query = """INSERT INTO chat_table (created_by, created_at) VALUES (%s,%s)"""
+#             id_date = datetime.now()
+#             data = (user, id_date,)
+#             cursor.execute(my_query, data)
+#             mysql.connection.commit()
 
-            my_query = f"""SELECT chat_room_id FROM chat_table WHERE created_at = {id_date} """
-            cursor.execute(my_query)
-            chat_id = cursor.fetchall()
+#             my_query = f"""SELECT chat_room_id FROM chat_table WHERE created_at = {id_date} """
+#             cursor.execute(my_query)
+#             chat_id = cursor.fetchall()
 
-            my_query = """INSERT INTO chat_association_table (employee_id_fk, room_id_fk) VALUES (%s,%s)"""
-            data = (empId, chat_id,)
-            cursor.execute(my_query, data)
-            mysql.connection.commit()
+#             my_query = """INSERT INTO chat_association_table (employee_id_fk, room_id_fk) VALUES (%s,%s)"""
+#             data = (empId, chat_id,)
+#             cursor.execute(my_query, data)
+#             mysql.connection.commit()
 
-            return chat_id
+#             return chat_id[0]['chat_room_id']
 
-    except Exception as e:
-        print(e)
-        return "Problem Creating Chat"
+#         else:
+#             return is_exsist[0]['chat_room_id']
+
+#     except Exception as e:
+#         print(e)
+#         return "Problem Creating Or Retriveing Chat"

@@ -128,3 +128,16 @@ def order_status():
     message = ProductionQueryGet.status_order(id, status, limit, offset)
 
     return jsonify({"message":message})
+
+
+
+@production.route('/get-order-chat/<id>', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Production'])
+@try_except
+def get_orders_chat(id):
+
+    offset = request.args.get('offset')
+    chat_data = ProductionQueryGet.get_order_chat(id, offset)
+
+    return jsonify(chat_data = chat_data)

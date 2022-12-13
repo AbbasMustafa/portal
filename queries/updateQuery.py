@@ -148,50 +148,11 @@ class Admin:
             mysql.connection.commit()
 
 
-            # for saleAgent in saleAgent:
-            #     my_query = """UPDATE order_employee_association SET employee_id_fk=%s, order_emp_status=%s, order_assign_status=%s WHERE order_id_fk=%s"""
-            #     data = (saleAgent, 'Active', 'assign by',id)
-            #     cursor.execute(my_query, data)
-            #     mysql.connection.commit()
-
-            # for assignedTo in assignedTo:
-            #     my_query = """UPDATE order_employee_association SET employee_id_fk=%s, order_emp_status=%s, order_assign_status=%s WHERE order_id_fk=%s"""
-            #     data = (assignedTo, 'Active', 'assign to',id)
-            #     cursor.execute(my_query, data)
-            #     mysql.connection.commit()
-
             my_query = """UPDATE order_price SET Price_order=%s, currency=%s WHERE order_id_fk=%s"""
             data = (self.totalCost, self.currency, id)
             cursor.execute(my_query, data)
             mysql.connection.commit()
-            
-
-            # my_query = """INSERT INTO chat_table (created_by, created_at) VALUES(%s,%s)"""
-            # data = (userId, datetime.today(),)
-            # cursor.execute(my_query, data)
-            # mysql.connection.commit()
-
-            # my_query = """SELECT chat_room_id FROM chat_table order by chat_room_id desc"""
-            # cursor.execute(my_query)
-            # chatRoom = cursor.fetchall()
-
-            # my_query = f"""UPDATE order_detail SET order_chat_room = '{chatRoom[0]['chat_room_id']}' WHERE order_id = '{orderID[0]['order_id']}' """
-            # cursor.execute(my_query)
-            # mysql.connection.commit()
-
-            # for saleAgent in saleAgent:
-            #     my_query = """UPDATE chat_association_table SET employee_id_fk=%s"""
-            #     data = (saleAgent,)
-            #     cursor.execute(my_query, data)
-            #     mysql.connection.commit()
-
-            # for assignedTo in assignedTo:
-            #     my_query = """INSERT INTO chat_association_table (employee_id_fk, room_id_fk) VALUES(%s,%s)"""
-            #     data = (assignedTo, self.room_id,)
-            #     cursor.execute(my_query, data)
-            #     mysql.connection.commit()
-
-
+        
             
             return "Order Updated"
 
@@ -224,8 +185,8 @@ class Admin:
             mysql.connection.commit()
 
 
-            my_query = """INSERT INTO chat_association_table (employee_id_fk, room_id_fk) VALUES(%s,%s)"""
-            data = (self.recipient, self.room_id,)
+            my_query = """INSERT INTO chat_association_table (employee_id_fk, room_id_fk, chat_type) VALUES(%s,%s,%s)"""
+            data = (self.recipient, self.room_id, 'order',)
             cursor.execute(my_query, data)
             mysql.connection.commit()
 

@@ -109,3 +109,31 @@ def user_status_view():
     userStatus = request.args.get('status')
     filter_users = HrQueryGet.user_status(userStatus)
     return jsonify(users = filter_users)
+
+
+
+@hr.route('/get-single-chat/<roomId>', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Human Resource'])
+@try_except
+def get_single_chat_data(roomId):
+
+    offset = request.args.get('offset')
+    chat_data = HrQueryGet.single_chat(roomId, offset)
+
+    return jsonify(chat_data = chat_data)
+
+
+
+@hr.route('/single-chat', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
+def create_chat():
+    if request.method == 'POST':
+        users = request.get_json()['userId']
+        empId = request.get_json()['empId']
+        
+        message = HrQueryPost.create_single_chat(users, empId)
+
+        return jsonify({"message":message})

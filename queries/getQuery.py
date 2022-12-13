@@ -445,6 +445,20 @@ class Admin:
             return "Cannot fetch orders"
 
 
+    def single_chat(self, roomId, offset):
+        try:  
+            cursor = mysql.connection.cursor()
+            my_query = f"""SELECT chat_message, chat_room_id_fk, chat_username, chat_date, employee_id_fk FROM 
+            chat_data INNER JOIN chat_table ON chat_table.chat_room_id = chat_data.chat_room_id_fk WHERE 
+            chat_room_id_fk = '{roomId}' ORDER BY (chat_data_id) DESC LIMIT 100 OFFSET {offset}"""
+            cursor.execute(my_query)
+            return_data = cursor.fetchall()
+            return return_data
+
+        except Exception as e:
+            print(e)
+            return "Cannot get chat history"
+
 
 class Hr (Admin):
 
