@@ -37,6 +37,26 @@ class Admin:
             return "Cannot remove recipients"
 
 
+    def delete_recipients_global(self, formData):
+        
+        empId = formData['empId']
+        roomId = formData['roomId']
+        
+        try:
+            cursor = mysql.connection.cursor()
+
+            my_query = f"""DELETE FROM chat_association_table WHERE employee_id_fk = '{empId}' AND room_id_fk = '{roomId}'
+            AND chat_type = 'global' """
+            cursor.execute(my_query)
+            mysql.connection.commit()
+
+            return "Recipient deleted"
+
+        except Exception as e:
+            print(e)
+            return "Cannot remove recipients"
+
+
 class Hr (Admin):
 
     def delete(self):

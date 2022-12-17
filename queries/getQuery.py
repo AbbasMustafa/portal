@@ -43,7 +43,7 @@ class Admin:
         try:
             cursor = mysql.connection.cursor()
             my_query = """SELECT employee_id, employee_name, designation, salary, register_date, manager_name, 
-            department_name, active FROM employee_detail INNER JOIN manager_table ON
+            department_name, active FROM employee_detail LEFT JOIN manager_table ON
             employee_detail.employee_manager_id = manager_table.manager_id INNER JOIN department ON 
             employee_detail.employee_department_id = department.department_id INNER JOIN login_credential ON
             login_credential.employee_id_fk = employee_detail.employee_id"""
@@ -134,9 +134,10 @@ class Admin:
     def get_sale_agent(self):
         try:
             cursor = mysql.connection.cursor()        
-            my_query = f"""SELECT employee_id, employee_name, department_name FROM user_role INNER JOIN 
+            my_query = f"""SELECT employee_id, employee_name, department_name, login_email FROM user_role INNER JOIN 
             employee_detail ON user_role.role_id = employee_detail.employee_role_id
             INNER JOIN department ON employee_detail.employee_department_id = department.department_id
+            INNER JOIN login_credential ON employee_detail.employee_id = login_credential.employee_id_fk
             WHERE role_name = 'Admin' OR role_name = 'Sales' """
             cursor.execute(my_query)
             return_data = cursor.fetchall()
@@ -149,10 +150,11 @@ class Admin:
     def get_production(self):
         try:
             cursor = mysql.connection.cursor()        
-            my_query = f"""SELECT employee_id, employee_name, department_name, role_name FROM employee_detail INNER JOIN 
+            my_query = f"""SELECT employee_id, employee_name, department_name, login_email, role_name FROM employee_detail INNER JOIN 
             manager_table ON employee_detail.employee_id = manager_table.manager_emp_id  INNER JOIN department ON 
             employee_detail.employee_department_id = department.department_id INNER JOIN user_role ON 
-            user_role.role_id = employee_detail.employee_role_id
+            user_role.role_id = employee_detail.employee_role_id INNER JOIN login_credential ON employee_detail.employee_id =
+            login_credential.employee_id_fk
             WHERE department_name = 'Production' """
             cursor.execute(my_query)
             return_data = cursor.fetchall()
@@ -315,9 +317,10 @@ class Admin:
     def get_recipients(self, id):
         try:
             cursor = mysql.connection.cursor()
-            my_query = f"""SELECT employee_id, employee_name, role_name, department_name FROM employee_detail 
+            my_query = f"""SELECT employee_id, employee_name, login_email, role_name, department_name FROM employee_detail 
             INNER JOIN user_role ON employee_detail.employee_role_id = user_role.role_id LEFT JOIN department ON 
-            employee_detail.employee_department_id = department.department_id WHERE employee_id 
+            employee_detail.employee_department_id = department.department_id INNER JOIN
+            login_credential ON employee_detail.employee_id = login_credential.employee_id_fk WHERE employee_id 
             NOT IN(SELECT employee_id_fk FROM order_employee_association INNER JOIN
             order_detail ON order_detail.order_id = order_employee_association.order_id_fk WHERE 
             order_detail.order_id = '{id}') AND user_role.role_name != 'Hr'"""
@@ -381,25 +384,25 @@ class Admin:
             total = cursor.fetchall()
 
             my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
-            order_detail.order_id = order_employee_association.order_id_fk  WHERE  MONTH(CURRENT_DATE()) 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE MONTH(order_date) = MONTH(CURRENT_DATE()) 
             AND order_status != 'pre-order' AND order_type = 4 AND order_employee_association.employee_id_fk = '{id}'  """
             cursor.execute(my_query)
             developer_monthly = cursor.fetchall()
 
             my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
-            order_detail.order_id = order_employee_association.order_id_fk  WHERE  MONTH(CURRENT_DATE()) 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE MONTH(order_date) = MONTH(CURRENT_DATE()) 
             AND order_status != 'pre-order' AND order_type = 5 AND order_employee_association.employee_id_fk = '{id}'  """
             cursor.execute(my_query)
             writer_monthly = cursor.fetchall()
 
             my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
-            order_detail.order_id = order_employee_association.order_id_fk  WHERE  WEEK(CURRENT_DATE()) 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE WEEK(order_date) = WEEK(CURRENT_DATE()) 
             AND order_status != 'pre-order' AND order_type = 4 AND order_employee_association.employee_id_fk = '{id}'  """
             cursor.execute(my_query)
             developer_weekly = cursor.fetchall()
 
             my_query = f"""SELECT COUNT(order_id) FROM order_detail INNER JOIN order_employee_association ON 
-            order_detail.order_id = order_employee_association.order_id_fk  WHERE  WEEK(CURRENT_DATE()) 
+            order_detail.order_id = order_employee_association.order_id_fk  WHERE WEEK(order_date) = WEEK(CURRENT_DATE()) 
             AND order_status != 'pre-order' AND order_type = 5 AND order_employee_association.employee_id_fk = '{id}'  """
             cursor.execute(my_query)
             writer_weekly = cursor.fetchall()
@@ -460,6 +463,104 @@ class Admin:
             return "Cannot get chat history"
 
 
+    def all_chat_get(self, id):
+        
+        try:
+            cursor = mysql.connection.cursor()
+            my_query = f"""SELECT chat_room_id, group_concat(employee_name) employee_name, chat_type FROM chat_table 
+            INNER JOIN chat_association_table ON 
+            chat_table.chat_room_id = chat_association_table.room_id_fk
+            INNER JOIN employee_detail ON chat_association_table.employee_id_fk = employee_detail.employee_id 
+            WHERE room_id_fk IN (SELECT room_id_fk FROM chat_association_table INNER JOIN chat_table ON 
+            chat_table.chat_room_id = chat_association_table.room_id_fk
+            WHERE (chat_table.created_by = '{id}' OR chat_association_table.employee_id_fk  = '{id}') AND 
+            chat_association_table.chat_type = "personal") 
+            group by (chat_room_id)""" 
+            cursor.execute(my_query)
+            return_data = cursor.fetchall()
+            return return_data
+
+        except Exception as e:
+            print(e)
+            return "Cannot get chat"
+
+
+    def global_chat_get(self, id):
+        
+        try:
+            cursor = mysql.connection.cursor()
+            my_query = f"""SELECT chat_room_id, group_concat(employee_name) employee_name, chat_type FROM chat_table 
+            INNER JOIN chat_association_table ON 
+            chat_table.chat_room_id = chat_association_table.room_id_fk
+            INNER JOIN employee_detail ON chat_association_table.employee_id_fk = employee_detail.employee_id 
+            WHERE room_id_fk IN (SELECT room_id_fk FROM chat_association_table INNER JOIN chat_table ON 
+            chat_table.chat_room_id = chat_association_table.room_id_fk
+            WHERE (chat_table.created_by = '{id}' OR chat_association_table.employee_id_fk  = '{id}') AND 
+            chat_association_table.chat_type = "global") 
+            group by (chat_room_id)""" 
+            cursor.execute(my_query)
+            return_data = cursor.fetchall()
+            return return_data
+
+        except Exception as e:
+            print(e)
+            return "Cannot get chat"
+
+
+
+    def get_recipients_global(self, id):
+        try:
+            
+            cursor = mysql.connection.cursor()
+            my_query = f"""SELECT employee_id, employee_name, role_name, department_name FROM employee_detail 
+            INNER JOIN user_role ON employee_detail.employee_role_id = user_role.role_id LEFT JOIN department ON 
+            employee_detail.employee_department_id = department.department_id WHERE employee_id 
+            NOT IN(SELECT employee_id_fk FROM chat_association_table WHERE 
+            chat_association_table.room_id_fk = '{id}')"""
+            cursor.execute(my_query)
+            return_data = cursor.fetchall()
+            return return_data
+
+        except Exception as e:
+            print(e)
+            return "Cannot get recipients to add"
+
+
+    def get_remove_recipient_global(self, id):
+        try:
+            
+            cursor = mysql.connection.cursor()
+            my_query = f"""SELECT employee_id, employee_name, role_name, department_name FROM employee_detail 
+            INNER JOIN user_role ON employee_detail.employee_role_id = user_role.role_id LEFT JOIN department ON 
+            employee_detail.employee_department_id = department.department_id WHERE employee_id 
+            IN(SELECT employee_id_fk FROM chat_association_table WHERE 
+            chat_association_table.room_id_fk = '{id}') AND user_role.role_name != 'Admin'"""
+            cursor.execute(my_query)
+            return_data = cursor.fetchall()
+            return return_data
+
+        except Exception as e:
+            print(e)
+            return "Cannot get recipients to remove"
+
+
+    def get_emp_in_order(self, empId, id):
+        try:
+            
+            cursor = mysql.connection.cursor()
+            my_query = f"""SELECT order_id_fk FROM order_employee_association WHERE order_id_fk = '{id}'
+            AND employee_id_fk = '{empId}' """
+            cursor.execute(my_query)
+            return_data = cursor.fetchall()
+            return return_data
+        
+        except Exception as e:
+            print(e)
+            return "Cannot get employee order access"
+
+
+
+
 class Hr (Admin):
 
     def get_Role(self):
@@ -486,20 +587,20 @@ class Hr (Admin):
             return "Cannot get department"
     
 
-    def get_all_user(self):
-        try:
-            cursor = mysql.connection.cursor()
-            my_query = """SELECT employee_id, employee_name, designation, salary, register_date, manager_name, 
-            department_name, active FROM employee_detail INNER JOIN manager_table ON
-            employee_detail.employee_manager_id = manager_table.manager_id INNER JOIN department ON 
-            employee_detail.employee_department_id = department.department_id INNER JOIN login_credential ON
-            login_credential.employee_id_fk = employee_detail.employee_id AND department_name != 'Administration' """
-            cursor.execute(my_query)
-            return_data = cursor.fetchall()
-            return return_data
-        except Exception as e:
-            print(e)
-            return "Cannot get all user"
+    # def get_all_user(self):
+    #     try:
+    #         cursor = mysql.connection.cursor()
+    #         my_query = """SELECT employee_id, employee_name, designation, salary, register_date, manager_name, 
+    #         department_name, active FROM employee_detail INNER JOIN manager_table ON
+    #         employee_detail.employee_manager_id = manager_table.manager_id INNER JOIN department ON 
+    #         employee_detail.employee_department_id = department.department_id INNER JOIN login_credential ON
+    #         login_credential.employee_id_fk = employee_detail.employee_id AND department_name != 'Administration' """
+    #         cursor.execute(my_query)
+    #         return_data = cursor.fetchall()
+    #         return return_data
+    #     except Exception as e:
+    #         print(e)
+    #         return "Cannot get all user"
 
 
 

@@ -68,9 +68,9 @@ def delete_user_view():
 
         id = request.get_json()['userId']
         active = request.get_json()['active']
-        body = AdminQueryDelete.delete_user(id, active)
+        message = AdminQueryDelete.delete_user(id, active)
 
-        return jsonify(body=body)
+        return jsonify({"message":message})
 
 
 
@@ -196,14 +196,23 @@ def get_all_order():
 @authorize(my_roles=['Administration'])
 @try_except
 def get_orders(id):
-    data = AdminQueryGet.get_order(id)
-    doc_data = AdminQueryGet.get_order_doc(id)
 
-    if doc_data:
-        googlefile = fileGet(doc_data[0]['drive_folder_id'])
-        return jsonify(data = data[0], googlFiles = googlefile, doc_data=doc_data[0])
+    empId = request.headers['emp_id']
+
+    info = AdminQueryGet.get_emp_in_order(empId, id)
+
+    if not info:
+        return jsonify({"message": "you have no access to order"})
+
     else:
-        return jsonify(data = data[0])
+        data = AdminQueryGet.get_order(id)
+        doc_data = AdminQueryGet.get_order_doc(id)
+
+        if doc_data:
+            googlefile = fileGet(doc_data[0]['drive_folder_id'])
+            return jsonify(data = data[0], googlFiles = googlefile, doc_data=doc_data[0])
+        else:
+            return jsonify(data = data[0])
 
 
 
@@ -346,7 +355,7 @@ def change_order_status():
 
 @superAdmin.route('/order-stats', methods=['GET', 'POST'])
 @login_required
-@authorize(my_roles=['Administration', 'Sales', 'Production'])
+@authorize(my_roles=['Administration'])
 @try_except
 def get_order_stats():
 
@@ -362,13 +371,15 @@ def get_order_stats():
 
 
 
-@superAdmin.route('/get-single-chat/<roomId>', methods=['GET', 'POST'])
+@superAdmin.route('/get-single-chat', methods=['GET', 'POST'])
 @login_required
 @authorize(my_roles=['Administration'])
 @try_except
-def get_single_chat_data(roomId):
+def get_single_chat_data():
 
+    roomId = request.args.get('roomId')
     offset = request.args.get('offset')
+    # print(roomId, offset)
     chat_data = AdminQueryGet.single_chat(roomId, offset)
 
     return jsonify(chat_data = chat_data)
@@ -390,7 +401,49 @@ def create_chat():
 
 
 
+@superAdmin.route('/get-all-chat/<id>', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
+def get_all_chat(id):
 
+    data = AdminQueryGet.all_chat_get(id)
+    globalChat = AdminQueryGet.global_chat_get(id)
+
+    return jsonify({"data":data, "global":globalChat})
+
+
+
+@superAdmin.route('/annoucement-recipient/<id>', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
+def annoucment_recipients(id):
+
+    recipients = AdminQueryGet.get_recipients_global(id)
+    remove_recipients = AdminQueryGet.get_remove_recipient_global(id)
+
+    return jsonify(recipients=recipients, remove_recipients=remove_recipients)
+
+
+
+@superAdmin.route('/global-user', methods=['GET', 'PUT', 'DELETE'])
+@login_required
+@authorize(my_roles=['Administration'])
+@try_except
+def global_users():
+    if request.method == 'PUT':
+        
+        message = AdminQueryUpdate.add_recipients_global(request.get_json())
+        
+        return jsonify({"message":message})
+
+
+    if request.method == 'DELETE':
+
+        message = AdminQueryDelete.delete_recipients_global(request.get_json())
+        
+        return jsonify({"message":message})
 
 
 

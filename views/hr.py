@@ -83,9 +83,9 @@ def delete_user_view():
 
         id = request.get_json()['userId']
         active = request.get_json()['active']
-        body = HrQueryDelete.delete_user(id, active)
+        message = HrQueryDelete.delete_user(id, active)
 
-        return jsonify(body=body)
+        return jsonify({"message":message})
 
 
 
@@ -112,13 +112,15 @@ def user_status_view():
 
 
 
-@hr.route('/get-single-chat/<roomId>', methods=['GET', 'POST'])
+@hr.route('/get-single-chat', methods=['GET', 'POST'])
 @login_required
 @authorize(my_roles=['Human Resource'])
 @try_except
-def get_single_chat_data(roomId):
+def get_single_chat_data():
 
+    roomId = request.args.get('roomId')
     offset = request.args.get('offset')
+    # print(roomId, offset)
     chat_data = HrQueryGet.single_chat(roomId, offset)
 
     return jsonify(chat_data = chat_data)
@@ -127,7 +129,7 @@ def get_single_chat_data(roomId):
 
 @hr.route('/single-chat', methods=['GET', 'POST'])
 @login_required
-@authorize(my_roles=['Administration'])
+@authorize(my_roles=['Human Resource'])
 @try_except
 def create_chat():
     if request.method == 'POST':
@@ -136,4 +138,49 @@ def create_chat():
         
         message = HrQueryPost.create_single_chat(users, empId)
 
+        return jsonify({"message":message})
+
+
+
+@hr.route('/get-all-chat/<id>')
+@login_required
+@authorize(my_roles=['Human Resource'])
+@try_except
+def get_all_chat(id):
+
+    data = HrQueryGet.all_chat_get(id)
+    globalChat = HrQueryGet.global_chat_get(id)
+
+    return jsonify({"data":data, "global":globalChat})
+
+
+@hr.route('/annoucment-recipients/<id>', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Human Resource'])
+@try_except
+def annoucment_recipients(id):
+
+    recipients = HrQueryGet.get_recipients_global(id)
+    remove_recipients = HrQueryGet.get_remove_recipient_global(id)
+
+    return jsonify(recipients=recipients, remove_recipients=remove_recipients)
+
+
+
+@hr.route('/global-user', methods=['GET', 'PUT', 'DELETE'])
+@login_required
+@authorize(my_roles=['Human Resource'])
+@try_except
+def global_users():
+    if request.method == 'PUT':
+        
+        message = HrQueryUpdate.add_recipients_global(request.get_json())
+        
+        return jsonify({"message":message})
+
+
+    if request.method == 'DELETE':
+
+        message = HrQueryDelete.delete_recipients_global(request.get_json())
+        
         return jsonify({"message":message})

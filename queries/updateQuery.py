@@ -1,6 +1,7 @@
 from config import mysql
 from utils.google_drive import *
 from flask import request
+from utils.mailSender import *
 
 class Admin:
         
@@ -169,11 +170,15 @@ class Admin:
             self.order_id = formData['orderId']
             self.order_code = formData['orderCode']
             self.room_id = formData['roomId']
+            self.user_email = formData['userEmail']
+            self.domain = formData['domain']
 
             if self.role == 'Developer' or self.role == 'Writer' or self.role == 'Freelancer':
                 assign_status = 'assign to'
+                user_role = 'production'
             else:
                 assign_status = 'assign by'
+                user_role = self.role
 
             cursor = mysql.connection.cursor()
 
@@ -189,6 +194,9 @@ class Admin:
             data = (self.recipient, self.room_id, 'order',)
             cursor.execute(my_query, data)
             mysql.connection.commit()
+
+
+            mail_sender(self.user_email, self.order_id, self.domain, user_role)
 
             return "Recipient Added"
 
@@ -254,6 +262,30 @@ class Admin:
             return "Error uploading file"
 
 
+    def add_recipients_global(self, formData):
+
+        try:
+            empId = formData['empId']
+            roomId = formData['roomId']
+
+            cursor = mysql.connection.cursor()
+
+            my_query = """INSERT INTO chat_association_table (employee_id_fk, room_id_fk, chat_type)
+            VALUES (%s,%s,%s)"""
+            data = (empId, roomId, 'global')
+            cursor.execute(my_query, data)
+            mysql.connection.commit()
+
+            return "Recipient added"
+
+        except Exception as e:
+            print(e)
+            return "Cannot add recipient"
+
+
+
+
+
 
 class Hr:
 
@@ -298,6 +330,28 @@ class Hr:
         
         except Exception as e:
             return "error"
+
+
+    
+    def add_recipients_global(self, formData):
+
+        try:
+            empId = formData['empId']
+            roomId = formData['roomId']
+
+            cursor = mysql.connection.cursor()
+
+            my_query = """INSERT INTO chat_association_table (employee_id_fk, room_id_fk, chat_type)
+            VALUES (%s,%s,%s)"""
+            data = (empId, roomId, 'global')
+            cursor.execute(my_query, data)
+            mysql.connection.commit()
+
+            return "Recipient added"
+
+        except Exception as e:
+            print(e)
+            return "Cannot add recipient"
 
 
 class Sales (Admin):

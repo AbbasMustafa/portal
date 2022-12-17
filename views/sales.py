@@ -108,14 +108,24 @@ def get_all_order():
 @authorize(my_roles=['Sales'])
 @try_except
 def get_orders(id):
-    data = SaleQueryGet.get_order(id)
-    doc_data = SaleQueryGet.get_order_doc(id)
+    
+    empId = request.headers['emp_id']
 
-    if doc_data:
-        googlefile = fileGet(doc_data[0]['drive_folder_id'])
-        return jsonify(data = data[0], googlFiles = googlefile, doc_data=doc_data[0])
+    info = SaleQueryGet.get_emp_in_order(empId, id)
+
+    if not info:
+
+        return jsonify({"message": "you have no access to order"})
+
     else:
-        return jsonify(data = data[0])
+        data = SaleQueryGet.get_order(id)
+        doc_data = SaleQueryGet.get_order_doc(id)
+
+        if doc_data:
+            googlefile = fileGet(doc_data[0]['drive_folder_id'])
+            return jsonify(data = data[0], googlFiles = googlefile, doc_data=doc_data[0])
+        else:
+            return jsonify(data = data[0])
 
 
 
@@ -270,3 +280,50 @@ def order_status():
     message = SaleQueryGet.status_order(id, status, limit, offset)
 
     return jsonify({"message":message})
+
+
+
+@sale.route('/get-single-chat', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Sales'])
+@try_except
+def get_single_chat_data():
+
+    roomId = request.args.get('roomId')
+    offset = request.args.get('offset')
+    # print(roomId, offset)
+    chat_data = SaleQueryGet.single_chat(roomId, offset)
+
+    return jsonify(chat_data = chat_data)
+
+
+
+@sale.route('/get-all-chat/<id>', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Sales'])
+@try_except
+def get_all_chat(id):
+
+    data = SaleQueryGet.all_chat_get(id)
+    globalChat = SaleQueryGet.global_chat_get(id)
+
+    return jsonify({"data":data, "global":globalChat})
+
+
+
+
+@sale.route('/order-stats', methods=['GET', 'POST'])
+@login_required
+@authorize(my_roles=['Sales'])
+@try_except
+def get_order_stats():
+
+    id = request.args.get('empId')
+    message = SaleQueryGet.order_stats(id)
+
+    return jsonify({"completed":message[0][0]['COUNT(order_id)'], "cancelled":message[1][0]['COUNT(order_id)'], 
+    "revision":message[2][0]['COUNT(order_id)'], "hold":message[3][0]['COUNT(order_id)'], 
+    "progress":message[4][0]['COUNT(order_id)'], "total":message[5][0]['COUNT(order_id)'],
+    "developer-monthly":message[6][0]['COUNT(order_id)'], "writer-monthly":message[7][0]['COUNT(order_id)'],
+    "developer-weekly":message[8][0]['COUNT(order_id)'], "writer-weekly":message[9][0]['COUNT(order_id)'],
+    "developer-daily":message[10][0]['COUNT(order_id)'],"writer-daily":message[11][0]['COUNT(order_id)']})

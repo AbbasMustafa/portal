@@ -87,8 +87,6 @@ def forgot_password_view():
 @try_except
 def logout_view():
     try:
-        # session.clear()
-        # print(request.headers.get('set-cookie'))
         return jsonify({"message":'Logout successful'})
     except Exception as e:
         print(e)
