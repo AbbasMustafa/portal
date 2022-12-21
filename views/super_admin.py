@@ -379,7 +379,6 @@ def get_single_chat_data():
 
     roomId = request.args.get('roomId')
     offset = request.args.get('offset')
-    # print(roomId, offset)
     chat_data = AdminQueryGet.single_chat(roomId, offset)
 
     return jsonify(chat_data = chat_data)

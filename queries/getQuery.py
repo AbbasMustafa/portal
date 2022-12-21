@@ -45,7 +45,7 @@ class Admin:
             my_query = """SELECT employee_id, employee_name, designation, salary, register_date, manager_name, 
             department_name, active FROM employee_detail LEFT JOIN manager_table ON
             employee_detail.employee_manager_id = manager_table.manager_id INNER JOIN department ON 
-            employee_detail.employee_department_id = department.department_id INNER JOIN login_credential ON
+            employee_detail.employee_department_id = department.department_id LEFT JOIN login_credential ON
             login_credential.employee_id_fk = employee_detail.employee_id"""
             cursor.execute(my_query)
             return_data = cursor.fetchall()
@@ -62,7 +62,7 @@ class Admin:
             employee_department_id, designation, salary, date_of_birth, cnic, bank_account_title, role_name, manager_name, department_name,
             bank_account_number, register_date, role_id FROM login_credential INNER JOIN employee_detail 
             ON login_credential.employee_id_fk = employee_detail.employee_id
-            INNER JOIN department ON employee_detail.employee_department_id = department.department_id INNER JOIN 
+            INNER JOIN department ON employee_detail.employee_department_id = department.department_id LEFT JOIN 
             manager_table ON employee_detail.employee_manager_id = manager_table.manager_id INNER JOIN user_role ON
             employee_detail.employee_role_id = user_role.role_id WHERE employee_id = {id} """
             cursor.execute(my_query)
